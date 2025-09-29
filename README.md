@@ -1,6 +1,6 @@
-# 🕷️ RUANTECH V2.0 - INFINITE WEB
+# �️ RUANTECH - INFINITE WEB
 
-> Plataforma web interativa com 28+ serviços conectados, design responsivo premium, temas dinâmicos e performance nativa otimizada.
+> Site pessoal de Ruan Araujo com 28+ serviços conectados, design responsivo premium, temas dinâmicos e performance nativa otimizada.
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://ruan1araujo.github.io/RUANTECH/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -8,9 +8,8 @@
 
 ## 🚀 Demonstração
 
-- **[🌐 Acesse a Demo Online](https://ruan1araujo.github.io/RUANTECH/)** - Versão hospedada no GitHub Pages
+- **[🌐 Acesse o Site](https://ruan1araujo.github.io/RUANTECH/)** - Site oficial de Ruan Araujo
 - **Local**: Clone o repositório e abra `index.html` no navegador
-- **Servidor Local**: Use XAMPP, Live Server ou similar para melhor experiência
 
 ## ✨ Características
 
@@ -115,34 +114,18 @@ RUANTECH/
 ## 🚀 Como Usar
 
 ### **Método 1: Acesso Online**
-
 ```bash
-# Simplesmente acesse:
+# Acesse diretamente:
 https://ruan1araujo.github.io/RUANTECH/
 ```
 
 ### **Método 2: Clone Local**
-
 ```bash
-# 1. Clone o repositório
+# Clone o repositório
 git clone https://github.com/ruan1araujo/RUANTECH.git
 cd RUANTECH
 
-# 2. Abra no navegador
-# Duplo-clique em index.html ou use um servidor local
-```
-
-### **Método 3: Servidor Local**
-
-```bash
-# Com Python
-python -m http.server 8000
-
-# Com Node.js (npx)
-npx http-server
-
-# Com Live Server (VS Code)
-# Clique direito em index.html > "Open with Live Server"
+# Abra index.html no navegador
 ```
 
 ---
@@ -223,9 +206,8 @@ Contribuições são bem-vindas! Se você tem ideias para melhorar o projeto:
 6. **Abra um Pull Request**
 
 ### **Áreas para Contribuição**
-
 - 🎨 Novos temas e estilos
-- ⚡ Otimizações de performance
+- ⚡ Otimizações de performance  
 - 🔧 Novos serviços/demos
 - 🐛 Correções de bugs
 - 📱 Melhorias de responsividade
@@ -234,16 +216,13 @@ Contribuições são bem-vindas! Se você tem ideias para melhorar o projeto:
 ## 🆘 Suporte
 
 ### **Problemas Comuns**
-
 - **Imagem não carrega**: Verifique se `assets/images/ruantech-cpu-hub.png` existe
 - **Tema não muda**: Verifique se JavaScript está habilitado
 - **Layout quebrado**: Confirme se Tailwind CSS está carregando
 
 ### **Contato**
-
 - 🐛 **Issues**: [Reporte bugs aqui](https://github.com/ruan1araujo/RUANTECH/issues)
 - 💬 **Discussões**: Use a aba "Discussions" do repositório
-- 📧 **Email**: Para contato direto
 
 ## 📄 Licença
 
@@ -282,8 +261,8 @@ Este projeto foi desenvolvido com foco em:
 - **Experiência do usuário** premium
 - **Código limpo** e bem documentado
 
-**Explore a teia infinita de possibilidades! 🕷️**
+**Explore a teia infinita de possibilidades! �️**
 
 ---
 
-**Desenvolvido com 💜 por [ruan1araujo](https://github.com/ruan1araujo) | RUANTECH © 2025**
+**Desenvolvido com 💜 por [Ruan Araujo](https://github.com/ruan1araujo) | RUANTECH © 2025**
