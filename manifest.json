@@ -1,0 +1,194 @@
+{
+  "name": "RUANTECH V2.0 - Teia Infinita Interativa",
+  "short_name": "RUANTECH",
+  "description": "Plataforma web interativa com 28+ serviços, demos reais e navegação infinita. Tecnologia nativa de alta performance.",
+  "version": "2.0.0",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#7c3aed",
+  "background_color": "#0a0a0a",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  
+  "icons": [
+    {
+      "src": "/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-1.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Teia Infinita - Visão Desktop"
+    },
+    {
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Experiência Mobile Interativa"
+    }
+  ],
+  
+  "categories": [
+    "productivity",
+    "developer",
+    "business",
+    "utilities"
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Demos Reais",
+      "short_name": "Demos",
+      "description": "Acesso direto aos demos interativos",
+      "url": "/demos",
+      "icons": [
+        {
+          "src": "/icons/shortcut-demos.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Buscar Serviços",
+      "short_name": "Busca",
+      "description": "Busca rápida por serviços",
+      "url": "/search",
+      "icons": [
+        {
+          "src": "/icons/shortcut-search.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Catálogo Completo",
+      "short_name": "Catálogo",
+      "description": "Lista completa de serviços",
+      "url": "/catalogo",
+      "icons": [
+        {
+          "src": "/icons/shortcut-catalog.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Contato",
+      "short_name": "Contato",
+      "description": "Entre em contato conosco",
+      "url": "/contato",
+      "icons": [
+        {
+          "src": "/icons/shortcut-contact.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://ruantech.com"
+    }
+  ],
+  
+  "prefer_related_applications": false,
+  
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  
+  "launch_handler": {
+    "client_mode": "navigate-new"
+  },
+  
+  "handle_links": "preferred",
+  
+  "protocol_handlers": [
+    {
+      "protocol": "web+ruantech",
+      "url": "/handle/%s"
+    }
+  ],
+  
+  "file_handlers": [
+    {
+      "action": "/handle-files",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"],
+        "text/xml": [".xml"]
+      }
+    }
+  ],
+  
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "application/pdf"]
+        }
+      ]
+    }
+  }
+}

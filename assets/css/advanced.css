@@ -1,0 +1,471 @@
+/* RUANTECH V2.0 - Advanced CSS Utilities */
+
+/* Connection Lines System */
+.connection-line {
+    stroke: url(#connectionGradient);
+    stroke-width: 2;
+    fill: none;
+    filter: url(#glow);
+    opacity: 0.7;
+    animation: pulse-connection 4s ease-in-out infinite;
+}
+
+.connection-line.active {
+    stroke-width: 3;
+    opacity: 1;
+    animation: flow-connection 2s ease-in-out infinite;
+}
+
+.connection-line.hover-highlight {
+    stroke: #7c3aed;
+    stroke-width: 4;
+    opacity: 1;
+    filter: url(#glow);
+}
+
+/* Connection Types */
+.connection-primary {
+    stroke: #7c3aed !important;
+    stroke-width: 2;
+    stroke-opacity: 0.8;
+    fill: none;
+}
+
+.connection-secondary {
+    stroke: #06b6d4 !important;
+    stroke-width: 1.5;
+    stroke-opacity: 0.6;
+    fill: none;
+}
+
+.connection-tertiary {
+    stroke: #10b981 !important;
+    stroke-width: 1;
+    stroke-opacity: 0.4;
+    fill: none;
+}
+
+/* Hover effects for connections */
+.connection-line:hover {
+    stroke-width: 3 !important;
+    stroke-opacity: 1 !important;
+}
+
+/* Debug - tornar todas as linhas visíveis */
+path.connection-line {
+    stroke: #7c3aed !important;
+    stroke-width: 2;
+    stroke-opacity: 0.6;
+    fill: none;
+    pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .connection-line {
+        stroke-width: 1.5;
+    }
+    
+    .connection-primary {
+        stroke-width: 2;
+    }
+    
+    .connection-line.hover-highlight {
+        stroke-width: 3;
+    }
+}
+
+@keyframes pulse-connection {
+    0%, 100% { 
+        stroke-opacity: 0.4;
+        stroke-width: 2;
+    }
+    50% { 
+        stroke-opacity: 0.8;
+        stroke-width: 3;
+    }
+}
+
+@keyframes flow-connection {
+    0% { stroke-dashoffset: 100; }
+    100% { stroke-dashoffset: 0; }
+}
+
+/* Neural Network Effect */
+.neural-node {
+    position: relative;
+}
+
+.neural-node::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: neural-pulse 3s ease-in-out infinite;
+    z-index: 20;
+}
+
+@keyframes neural-pulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}
+
+/* Glassmorphism Advanced Effects */
+.glass-ultra {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 8px 32px rgba(31, 38, 135, 0.37),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-hover-ultra:hover {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px) saturate(250%);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+        0 16px 48px rgba(124, 58, 237, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 3D Transform Effects */
+.transform-3d {
+    transform-style: preserve-3d;
+}
+
+.card-3d {
+    perspective: 1000px;
+}
+
+.card-3d:hover .card-front {
+    transform: rotateY(-180deg);
+}
+
+.card-3d:hover .card-back {
+    transform: rotateY(0deg);
+}
+
+.card-front,
+.card-back {
+    backface-visibility: hidden;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Morphing Animations */
+@keyframes morph {
+    0%, 100% { 
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; 
+        transform: rotate(0deg);
+    }
+    50% { 
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; 
+        transform: rotate(180deg);
+    }
+}
+
+.morph-blob {
+    animation: morph 8s ease-in-out infinite;
+    background: linear-gradient(45deg, #7c3aed, #3b82f6, #10b981);
+    background-size: 400% 400%;
+    animation: morph 8s ease-in-out infinite, gradient-shift 6s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Neural Network Lines */
+.neural-line {
+    stroke-dasharray: 5 5;
+    animation: neural-flow 3s linear infinite;
+}
+
+@keyframes neural-flow {
+    0% { 
+        stroke-dashoffset: 0;
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% { 
+        stroke-dashoffset: -20;
+        opacity: 0.3;
+    }
+}
+
+/* Holographic Text Effect */
+.holographic {
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 70%
+    );
+    background-size: 200% 200%;
+    animation: holographic-shine 3s ease-in-out infinite;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+@keyframes holographic-shine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Matrix Rain Effect */
+.matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.matrix-char {
+    position: absolute;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    animation: matrix-fall linear infinite;
+}
+
+@keyframes matrix-fall {
+    0% {
+        transform: translateY(-100vh);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+/* Cyberpunk Glitch Effect */
+.glitch {
+    position: relative;
+    color: #fff;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    animation: glitch-1 0.5s infinite;
+    color: #ff00de;
+    z-index: -1;
+}
+
+.glitch::after {
+    animation: glitch-2 0.5s infinite;
+    color: #00ff00;
+    z-index: -2;
+}
+
+@keyframes glitch-1 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(2px, 2px); }
+    40% { transform: translate(2px, -2px); }
+    60% { transform: translate(-2px, 2px); }
+    80% { transform: translate(-2px, -2px); }
+}
+
+/* Loading Skeleton Enhanced */
+.skeleton-enhanced {
+    background: linear-gradient(
+        90deg,
+        transparent 25%,
+        rgba(124, 58, 237, 0.1) 50%,
+        transparent 75%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-enhanced 2s infinite;
+}
+
+@keyframes skeleton-enhanced {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Magnetic Cursor Effect */
+.magnetic {
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.magnetic:hover {
+    transform: scale(1.1);
+}
+
+/* Parallax Scrolling */
+.parallax {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.parallax-slow {
+    transform: translate3d(0, calc(var(--scroll) * -0.5px), 0);
+}
+
+.parallax-fast {
+    transform: translate3d(0, calc(var(--scroll) * -1px), 0);
+}
+
+/* Code Syntax Highlighting */
+.code-highlight {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    overflow-x: auto;
+}
+
+.code-highlight .keyword { color: #ff79c6; }
+.code-highlight .string { color: #f1fa8c; }
+.code-highlight .function { color: #50fa7b; }
+.code-highlight .comment { color: #6272a4; }
+.code-highlight .number { color: #bd93f9; }
+
+/* Interactive Tooltips */
+.tooltip {
+    position: relative;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 100;
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover::before,
+.tooltip:hover::after {
+    opacity: 1;
+}
+
+/* Responsive Utilities */
+@media (max-width: 640px) {
+    .mobile-full { width: 100vw; margin-left: calc(-50vw + 50%); }
+    .mobile-center { text-align: center; }
+    .mobile-stack { flex-direction: column; }
+    .mobile-hidden { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .no-motion {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .no-print { display: none !important; }
+    .glass { 
+        background: white !important;
+        color: black !important;
+        border: 1px solid #ccc !important;
+    }
+}
+
+/* Dark Mode Utilities */
+@media (prefers-color-scheme: dark) {
+    .auto-dark { 
+        background-color: #111827;
+        color: #f9fafb;
+    }
+}
+
+/* High Performance Animations */
+.gpu-layer {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+.smooth-transform {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Focus Styles */
+.focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.5);
+}
+
+.focus-ring:focus-visible {
+    outline: 2px solid #7c3aed;
+    outline-offset: 2px;
+}

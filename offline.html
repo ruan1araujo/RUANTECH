@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUANTECH - Modo Offline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ruantech': {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .animate-pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(124, 58, 237, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.8), 0 0 30px rgba(124, 58, 237, 0.6); }
+        }
+        
+        .offline-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+    
+    <div class="container mx-auto px-4 text-center">
+        
+        <!-- Offline Icon -->
+        <div class="mb-8">
+            <div class="inline-block p-8 glass rounded-full animate-pulse-glow offline-animation">
+                <svg class="w-16 h-16 text-ruantech-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636L5.636 18.364M5.636 5.636l12.728 12.728"></path>
+                    <circle cx="12" cy="12" r="3" stroke-width="2" fill="none"></circle>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-ruantech-400 to-blue-500 bg-clip-text text-transparent">
+            🔄 RUANTECH
+        </h1>
+        
+        <h2 class="text-2xl font-semibold mb-4 text-gray-300">Modo Offline Ativado</h2>
+        
+        <!-- Message -->
+        <div class="max-w-md mx-auto mb-8">
+            <p class="text-gray-400 mb-4">
+                Você está navegando offline. Algumas funcionalidades podem estar limitadas, 
+                mas você ainda pode explorar os recursos em cache.
+            </p>
+        </div>
+        
+        <!-- Cached Features -->
+        <div class="max-w-2xl mx-auto mb-8">
+            <h3 class="text-lg font-semibold mb-4 text-ruantech-400">
+                ✅ Recursos Disponíveis Offline
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <div class="glass rounded-lg p-4 hover:bg-gray-700/30 transition-all">
+                    <div class="text-2xl mb-2">🎨</div>
+                    <h4 class="font-semibold mb-1">Interface Interativa</h4>
+                    <p class="text-sm text-gray-400">Navegação completa da teia</p>
+                </div>
+                
+                <div class="glass rounded-lg p-4 hover:bg-gray-700/30 transition-all">
+                    <div class="text-2xl mb-2">📊</div>
+                    <h4 class="font-semibold mb-1">Dados em Cache</h4>
+                    <p class="text-sm text-gray-400">Informações dos serviços</p>
+                </div>
+                
+                <div class="glass rounded-lg p-4 hover:bg-gray-700/30 transition-all">
+                    <div class="text-2xl mb-2">🎯</div>
+                    <h4 class="font-semibold mb-1">Busca Local</h4>
+                    <p class="text-sm text-gray-400">Pesquisar serviços salvos</p>
+                </div>
+                
+                <div class="glass rounded-lg p-4 hover:bg-gray-700/30 transition-all">
+                    <div class="text-2xl mb-2">⚙️</div>
+                    <h4 class="font-semibold mb-1">Configurações</h4>
+                    <p class="text-sm text-gray-400">Preferências pessoais</p>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto mb-8">
+            
+            <button onclick="tryReconnect()" 
+                    class="flex-1 bg-gradient-to-r from-ruantech-500 to-blue-500 hover:from-ruantech-600 hover:to-blue-600 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105">
+                🔄 Tentar Reconectar
+            </button>
+            
+            <button onclick="goToMain()" 
+                    class="flex-1 glass hover:bg-gray-700/50 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105">
+                🏠 Página Principal
+            </button>
+            
+        </div>
+        
+        <!-- Connection Status -->
+        <div id="connection-status" class="glass rounded-lg p-4 max-w-md mx-auto mb-8">
+            <div class="flex items-center justify-center space-x-2">
+                <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                <span class="text-sm">Verificando conexão...</span>
+            </div>
+        </div>
+        
+        <!-- Tips -->
+        <div class="max-w-lg mx-auto">
+            <h3 class="text-sm font-semibold mb-3 text-gray-400">💡 DICAS OFFLINE</h3>
+            
+            <div class="text-left space-y-2 text-sm text-gray-500">
+                <div class="flex items-start space-x-2">
+                    <span class="text-ruantech-400">•</span>
+                    <span>Suas preferências e configurações são mantidas localmente</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-ruantech-400">•</span>
+                    <span>Os dados serão sincronizados quando voltar online</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-ruantech-400">•</span>
+                    <span>Você pode continuar explorando os recursos em cache</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-ruantech-400">•</span>
+                    <span>A aplicação funcionará normalmente quando reconectar</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        // Connection Status Monitor
+        function updateConnectionStatus() {
+            const statusEl = document.getElementById('connection-status');
+            const isOnline = navigator.onLine;
+            
+            if (isOnline) {
+                statusEl.innerHTML = `
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span class="text-sm">Conectado! Redirecionando...</span>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                statusEl.innerHTML = `
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm">Offline - Aguardando conexão</span>
+                    </div>
+                `;
+            }
+        }
+        
+        // Try Reconnect
+        function tryReconnect() {
+            updateConnectionStatus();
+            
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                // Simulate checking connection
+                const button = event.target;
+                const originalText = button.innerHTML;
+                
+                button.innerHTML = '🔄 Verificando...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    updateConnectionStatus();
+                }, 2000);
+            }
+        }
+        
+        // Go to Main
+        function goToMain() {
+            if (navigator.onLine) {
+                window.location.href = '/';
+            } else {
+                // Try to load cached version
+                window.location.href = '/index.html';
+            }
+        }
+        
+        // Event Listeners
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        
+        // Initial check
+        updateConnectionStatus();
+        
+        // Periodic check
+        setInterval(updateConnectionStatus, 5000);
+        
+        // Service Worker communication
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data.type === 'cache-updated') {
+                    console.log('Cache updated:', event.data.data);
+                }
+            });
+        }
+        
+        // Auto-retry connection
+        let retryCount = 0;
+        const maxRetries = 10;
+        
+        function autoRetry() {
+            if (navigator.onLine || retryCount >= maxRetries) {
+                return;
+            }
+            
+            retryCount++;
+            
+            fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                .then(() => {
+                    window.location.reload();
+                })
+                .catch(() => {
+                    setTimeout(autoRetry, 10000 * retryCount); // Exponential backoff
+                });
+        }
+        
+        // Start auto-retry after 30 seconds
+        setTimeout(autoRetry, 30000);
+    </script>
+    
+</body>
+</html>
