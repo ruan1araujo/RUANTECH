@@ -1,6 +1,22 @@
-# �️ RUANTECH - INFINITE WEB
+# 🕸️ RUANTECH - INFINITE WEB
 
-> Site pessoal de Ruan Araujo com 28+ serviços conectados, design responsivo premium, temas dinâmicos e performance nativa otimizada.
+> Portfólio interativo da RUANTECH com demonstrações de 28+ serviços, design responsivo premium, temas dinâmicos e performance nativa otimizada.️ RUANTECH - INFINITE WEB
+
+> Site pessoal de Ruan Araujo com 28+ serviços con## 🏆 Sobre a RUANTECH
+
+A RUANTECH é uma empresa especializada em soluções web modernas e inovadoras. Este portfólio interativo foi desenvolvido com foco em:
+
+- **Performance nativa** sem frameworks pesados
+- **Design responsivo** de alta qualidade
+- **Experiência do usuário** premium
+- **Código limpo** e bem documentado
+- **Demonstrações reais** dos serviços oferecidos
+
+**Explore a teia infinita de possibilidades tecnológicas! 🕸️**
+
+---
+
+**Desenvolvido pela [RUANTECH](https://github.com/ruan1araujo) | © 2025**n responsivo premium, temas dinâmicos e performance nativa otimizada.
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://ruan1araujo.github.io/RUANTECH/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -8,12 +24,13 @@
 
 ## 🚀 Demonstração
 
-- **[🌐 Acesse o Site](https://ruan1araujo.github.io/RUANTECH/)** - Site oficial de Ruan Araujo
+- **[🌐 Acesse o Portfólio](https://ruan1araujo.github.io/RUANTECH/)** - Demonstrações interativas dos serviços RUANTECH
 - **Local**: Clone o repositório e abra `index.html` no navegador
 
 ## ✨ Características
 
-- **28+ Serviços Interconectados** organizados em 6 categorias
+- **28+ Serviços de Demonstração** organizados em 6 categorias empresariais
+- **Portfólio Interativo** com demonstrações reais dos serviços da RUANTECH
 - **Design Responsivo** com breakpoints otimizados (mobile-first)
 - **3 Temas Dinâmicos**: Dark, Light e Cyberpunk
 - **Sistema de Navegação Infinita** com hub central interativo
@@ -42,9 +59,9 @@ RUANTECH/
 └── 📄 README.md                   # Este arquivo
 ```
 
-## 🎯 Categorias de Serviços
+## 🎯 Portfólio de Serviços
 
-### 🎨 **Frontend (5 serviços)**
+### 🎨 **Desenvolvimento Frontend (5 serviços)**
 
 - Sites Responsivos (PWA, Mobile-First)
 - Landing Pages (Conversão, Analytics)
@@ -52,7 +69,7 @@ RUANTECH/
 - Single Page Apps (Router, State, Virtual DOM)
 - Mobile Apps (Hybrid, Native, Cross-Platform)
 
-### ⚙️ **Backend (5 serviços)**
+### ⚙️ **Desenvolvimento Backend (5 serviços)**
 
 - API REST (CRUD, JWT, Swagger)
 - Sistema de Autenticação (OAuth2, 2FA, Sessions)
@@ -60,14 +77,14 @@ RUANTECH/
 - Deploy em Nuvem (AWS, Docker, CI/CD)
 - Webhooks (Real-time, Events, Queues)
 
-### 🛒 **E-commerce (4 serviços)**
+### 🛒 **Soluções E-commerce (4 serviços)**
 
 - Loja Virtual (Catálogo, Filtros, SEO)
 - Carrinho Inteligente (Abandono, Upsell, Cupons)
 - Gateway Pagamento (PIX, Cartão, Boleto)
 - Gestão Estoque (Alertas, Reports, API)
 
-### 🏢 **Sistemas (5 serviços)**
+### 🏢 **Sistemas Empresariais (5 serviços)**
 
 - CRM (Leads, Pipeline, Reports)
 - ERP (Recursos, Módulos, BI)
@@ -75,7 +92,7 @@ RUANTECH/
 - Sistema Financeiro (Fluxo, DRE, Conciliação)
 - Portal Eventos (Inscrições, Check-in, QR)
 
-### 📱 **Conteúdo (5 serviços)**
+### 📱 **Gestão de Conteúdo (5 serviços)**
 
 - CMS (Editor, Workflow, Multi-idioma)
 - Blog Engine (Markdown, SEO, Comments)
@@ -83,7 +100,7 @@ RUANTECH/
 - Media Player (Playlist, HLS, Subtítulos)
 - Streaming Live (WebRTC, Chat, Recording)
 
-### 🤖 **Automação (4 serviços)**
+### 🤖 **Automação e IA (4 serviços)**
 
 - Chatbots IA (NLP, ML, Context)
 - Email Marketing (Campanhas, A/B, Trigger)
@@ -114,12 +131,14 @@ RUANTECH/
 ## 🚀 Como Usar
 
 ### **Método 1: Acesso Online**
+
 ```bash
 # Acesse diretamente:
 https://ruan1araujo.github.io/RUANTECH/
 ```
 
 ### **Método 2: Clone Local**
+
 ```bash
 # Clone o repositório
 git clone https://github.com/ruan1araujo/RUANTECH.git
@@ -206,8 +225,9 @@ Contribuições são bem-vindas! Se você tem ideias para melhorar o projeto:
 6. **Abra um Pull Request**
 
 ### **Áreas para Contribuição**
+
 - 🎨 Novos temas e estilos
-- ⚡ Otimizações de performance  
+- ⚡ Otimizações de performance
 - 🔧 Novos serviços/demos
 - 🐛 Correções de bugs
 - 📱 Melhorias de responsividade
@@ -216,11 +236,13 @@ Contribuições são bem-vindas! Se você tem ideias para melhorar o projeto:
 ## 🆘 Suporte
 
 ### **Problemas Comuns**
+
 - **Imagem não carrega**: Verifique se `assets/images/ruantech-cpu-hub.png` existe
 - **Tema não muda**: Verifique se JavaScript está habilitado
 - **Layout quebrado**: Confirme se Tailwind CSS está carregando
 
 ### **Contato**
+
 - 🐛 **Issues**: [Reporte bugs aqui](https://github.com/ruan1araujo/RUANTECH/issues)
 - 💬 **Discussões**: Use a aba "Discussions" do repositório
 
