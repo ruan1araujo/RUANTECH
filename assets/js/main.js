@@ -201,14 +201,8 @@ class RuantechApp {
             fabMain.setAttribute('aria-expanded', fabOpen.toString());
             fabOptions.setAttribute('aria-hidden', (!fabOpen).toString());
 
-            // Adicionar/remover backdrop para dispositivos móveis
-            if (isMobile) {
-                if (fabOpen) {
-                    this.createFabBackdrop();
-                } else {
-                    this.removeFabBackdrop();
-                }
-            }
+            // Backdrop removido para evitar ofuscamento da tela
+            // Agora o FAB funciona sem backdrop em todos os dispositivos
         };
 
         // Fechar FAB quando sair da viewport (mobile)
@@ -312,58 +306,11 @@ class RuantechApp {
         console.log('✅ FAB configurado com suporte móvel otimizado');
     }
 
-    createFabBackdrop() {
-        // Remover backdrop existente se houver
-        this.removeFabBackdrop();
+    // Função removida - createFabBackdrop() não é mais necessária
+    // pois estava causando ofuscamento indesejado da tela
 
-        const backdrop = document.createElement('div');
-        backdrop.id = 'fab-backdrop';
-        backdrop.className = 'fab-backdrop';
-        backdrop.style.cssText = `
-            position: fixed !important;
-            inset: 0 !important;
-            z-index: 9998 !important;
-            background: rgba(0, 0, 0, 0.2) !important;
-            backdrop-filter: blur(2px) !important;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: auto !important;
-        `;
-
-        document.body.appendChild(backdrop);
-
-        // Fade in
-        requestAnimationFrame(() => {
-            backdrop.style.opacity = '1';
-        });
-
-        // Fechar FAB ao clicar no backdrop
-        backdrop.addEventListener('click', () => {
-            const fabMain = document.getElementById('fab-main');
-            if (fabMain) {
-                fabMain.click();
-            }
-        });
-
-        // Fechar ao tocar no backdrop (mobile)
-        backdrop.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            const fabMain = document.getElementById('fab-main');
-            if (fabMain) {
-                fabMain.click();
-            }
-        });
-    }
-
-    removeFabBackdrop() {
-        const backdrop = document.getElementById('fab-backdrop');
-        if (backdrop) {
-            backdrop.style.opacity = '0';
-            setTimeout(() => {
-                backdrop.remove();
-            }, 200);
-        }
-    }
+    // Função removida - removeFabBackdrop() não é mais necessária
+    // pois o backdrop foi completamente removido
 
     executeFabAction(action) {
         switch (action) {
