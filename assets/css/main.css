@@ -68,12 +68,6 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
-    padding: clamp(0.75rem, 3vw, 1.5rem);
-}
-
-/* Navigation Nodes */
-.nav-node {
-    padding: clamp(0.75rem, 3vw, 1.5rem);
 }
 
 .service-node:hover {
@@ -161,6 +155,165 @@
 .touch-friendly {
     min-height: 44px;
     min-width: 44px;
+}
+
+/* Touch manipulation for better mobile interaction */
+.touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* FAB Responsive Styles */
+#fab-menu {
+    /* Garantir que sempre fique visível na tela */
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100vh - 1rem);
+}
+
+#fab-main {
+    /* Melhor área de toque para mobile */
+    min-width: 44px;
+    min-height: 44px;
+    position: relative;
+    z-index: 31;
+}
+
+#fab-options {
+    /* Prevenir overflow em telas pequenas */
+    max-width: calc(100vw - 2rem);
+    max-height: calc(70vh);
+    overflow-y: auto;
+    padding: 0.25rem;
+    
+    /* Backdrop para melhor visibilidade */
+    backdrop-filter: blur(4px);
+    border-radius: 0.75rem;
+    background: rgba(17, 24, 39, 0.1);
+}
+
+.fab-option {
+    /* Área de toque adequada para mobile */
+    min-width: 40px;
+    min-height: 40px;
+    position: relative;
+    backdrop-filter: blur(8px);
+}
+
+/* Responsive breakpoints específicos para FAB */
+@media (max-width: 374px) {
+    /* Telas muito pequenas (iPhone SE, etc.) */
+    #fab-main {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .fab-option {
+        width: 2rem !important;
+        height: 2rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    #fab-options {
+        bottom: calc(100% + 0.25rem) !important;
+    }
+    
+    #fab-options .fab-option + .fab-option {
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Mobile portrait */
+    #fab-menu {
+        right: clamp(0.5rem, 3vw, 1rem) !important;
+        bottom: clamp(0.5rem, 3vh, 1rem) !important;
+    }
+    
+    #fab-options {
+        max-height: 60vh;
+    }
+}
+
+@media (max-height: 600px) {
+    /* Dispositivos com altura reduzida */
+    #fab-options {
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    /* Landscape em mobile */
+    #fab-menu {
+        right: clamp(0.5rem, 2vw, 1rem) !important;
+        bottom: clamp(0.5rem, 5vh, 1rem) !important;
+    }
+    
+    #fab-options {
+        max-height: 40vh;
+        flex-direction: row;
+        flex-wrap: wrap;
+        bottom: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        right: calc(100% + 0.5rem);
+        gap: 0.5rem;
+    }
+}
+
+/* Animações otimizadas para performance */
+@media (prefers-reduced-motion: no-preference) {
+    #fab-main {
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    box-shadow 0.3s ease,
+                    background-color 0.2s ease;
+    }
+    
+    .fab-option {
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                    background-color 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
+}
+
+/* Estados de hover/focus melhorados */
+#fab-main:hover, #fab-main:focus-visible {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+}
+
+.fab-option:hover, .fab-option:focus-visible {
+    transform: scale(1.1);
+}
+
+#fab-main:active {
+    transform: scale(0.95);
+}
+
+.fab-option:active {
+    transform: scale(0.9);
+}
+
+/* Focus styles para acessibilidade */
+#fab-main:focus-visible,
+.fab-option:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    #fab-main,
+    .fab-option {
+        border: 2px solid #ffffff !important;
+    }
+    
+    #fab-options {
+        background: rgba(0, 0, 0, 0.9) !important;
+        border: 1px solid #ffffff;
+    }
 }
 
 /* Header */

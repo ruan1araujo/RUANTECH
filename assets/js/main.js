@@ -176,20 +176,193 @@ class RuantechApp {
         const fabMain = document.getElementById('fab-main');
         const fabOptions = document.getElementById('fab-options');
 
-        let fabOpen = false;
+        if (!fabMain || !fabOptions) {
+            console.log('FAB elements not found');
+            return;
+        }
 
-        fabMain?.addEventListener('click', () => {
+        let fabOpen = false;
+        let isMobile = window.innerWidth <= 768;
+
+        // Detectar se é dispositivo móvel
+        const checkMobile = () => {
+            isMobile = window.innerWidth <= 768;
+        };
+
+        // Função para abrir/fechar o FAB
+        const toggleFab = () => {
             fabOpen = !fabOpen;
             fabOptions.classList.toggle('hidden', !fabOpen);
+
+            // Rotação suave do botão principal
             fabMain.style.transform = fabOpen ? 'rotate(135deg)' : 'rotate(0deg)';
+
+            // Acessibilidade
+            fabMain.setAttribute('aria-expanded', fabOpen.toString());
+            fabOptions.setAttribute('aria-hidden', (!fabOpen).toString());
+
+            // Adicionar/remover backdrop para dispositivos móveis
+            if (isMobile) {
+                if (fabOpen) {
+                    this.createFabBackdrop();
+                } else {
+                    this.removeFabBackdrop();
+                }
+            }
+        };
+
+        // Fechar FAB quando sair da viewport (mobile)
+        const handleVisibilityChange = () => {
+            if (fabOpen && isMobile) {
+                const fabRect = fabMain.getBoundingClientRect();
+                const isVisible = fabRect.right <= window.innerWidth &&
+                    fabRect.bottom <= window.innerHeight &&
+                    fabRect.left >= 0 &&
+                    fabRect.top >= 0;
+
+                if (!isVisible) {
+                    toggleFab();
+                }
+            }
+        };
+
+        // Event listeners otimizados para touch
+        fabMain.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFab();
         });
 
+        // Touch específico para mobile
+        if ('ontouchstart' in window) {
+            let touchStartTime = 0;
+
+            fabMain.addEventListener('touchstart', (e) => {
+                touchStartTime = Date.now();
+            }, { passive: true });
+
+            fabMain.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Verificar se foi um tap rápido (não scroll)
+                const touchDuration = Date.now() - touchStartTime;
+                if (touchDuration < 300) {
+                    toggleFab();
+                }
+            });
+        }
+
+        // Configurar opções do FAB
         document.querySelectorAll('.fab-option').forEach(option => {
             option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
                 const action = e.currentTarget.dataset.action;
                 this.executeFabAction(action);
+                toggleFab();
             });
+
+            // Touch para opções
+            if ('ontouchstart' in window) {
+                option.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const action = e.currentTarget.dataset.action;
+                    this.executeFabAction(action);
+                    toggleFab();
+                });
+            }
         });
+
+        // Fechar FAB com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && fabOpen) {
+                toggleFab();
+            }
+        });
+
+        // Monitorar redimensionamento
+        window.addEventListener('resize', () => {
+            checkMobile();
+            handleVisibilityChange();
+        });
+
+        // Monitorar orientação
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                checkMobile();
+                handleVisibilityChange();
+            }, 100);
+        });
+
+        // Inicializar atributos de acessibilidade
+        fabMain.setAttribute('aria-expanded', 'false');
+        fabMain.setAttribute('aria-haspopup', 'menu');
+        fabMain.setAttribute('aria-label', 'Menu de ações rápidas');
+        fabOptions.setAttribute('role', 'menu');
+        fabOptions.setAttribute('aria-hidden', 'true');
+
+        // Adicionar atributos às opções
+        document.querySelectorAll('.fab-option').forEach((option, index) => {
+            option.setAttribute('role', 'menuitem');
+            option.setAttribute('tabindex', '-1');
+        });
+
+        console.log('✅ FAB configurado com suporte móvel otimizado');
+    }
+
+    createFabBackdrop() {
+        // Remover backdrop existente se houver
+        this.removeFabBackdrop();
+
+        const backdrop = document.createElement('div');
+        backdrop.id = 'fab-backdrop';
+        backdrop.className = 'fab-backdrop';
+        backdrop.style.cssText = `
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 9998 !important;
+            background: rgba(0, 0, 0, 0.2) !important;
+            backdrop-filter: blur(2px) !important;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: auto !important;
+        `;
+
+        document.body.appendChild(backdrop);
+
+        // Fade in
+        requestAnimationFrame(() => {
+            backdrop.style.opacity = '1';
+        });
+
+        // Fechar FAB ao clicar no backdrop
+        backdrop.addEventListener('click', () => {
+            const fabMain = document.getElementById('fab-main');
+            if (fabMain) {
+                fabMain.click();
+            }
+        });
+
+        // Fechar ao tocar no backdrop (mobile)
+        backdrop.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const fabMain = document.getElementById('fab-main');
+            if (fabMain) {
+                fabMain.click();
+            }
+        });
+    }
+
+    removeFabBackdrop() {
+        const backdrop = document.getElementById('fab-backdrop');
+        if (backdrop) {
+            backdrop.style.opacity = '0';
+            setTimeout(() => {
+                backdrop.remove();
+            }, 200);
+        }
     }
 
     executeFabAction(action) {

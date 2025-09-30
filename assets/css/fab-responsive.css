@@ -1,0 +1,380 @@
+/* FAB Mobile-First Responsive Design - Versão Corrigida */
+
+/* CSS Custom Properties para FAB */
+:root {
+    --fab-size-base: 3rem;
+    --fab-option-size-base: 2.5rem;
+    --fab-margin-base: 1rem;
+    --fab-z-index: 9999;
+}
+
+/* Base styles para FAB container - Mobile First */
+#fab-menu {
+    position: fixed !important;
+    z-index: var(--fab-z-index) !important;
+    
+    /* Posicionamento seguro para mobile */
+    right: var(--fab-margin-base) !important;
+    bottom: var(--fab-margin-base) !important;
+    
+    /* Garantir que nunca saia da viewport */
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+    
+    /* Prevenir interferência com outros elementos */
+    pointer-events: auto;
+    touch-action: none;
+}
+
+/* FAB Principal - Tamanho otimizado para touch */
+#fab-main {
+    width: var(--fab-size-base);
+    height: var(--fab-size-base);
+    min-width: 44px; /* Área mínima de toque acessível WCAG */
+    min-height: 44px;
+    
+    /* Otimizações para touch */
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none;
+    
+    /* Visual aprimorado */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.25rem;
+    
+    /* Transições suaves */
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease,
+                background 0.2s ease;
+    
+    /* Z-index para ficar sobre as opções */
+    position: relative;
+    z-index: calc(var(--fab-z-index) + 1);
+}
+
+/* Container das opções do FAB */
+#fab-options {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: calc(100% + 0.5rem) !important;
+    
+    /* Layout flexível */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    /* Limitações de tamanho para mobile */
+    max-width: calc(100vw - 2rem) !important;
+    max-height: 50vh !important;
+    overflow-y: auto;
+    overflow-x: hidden !important;
+    
+    /* Visual aprimorado */
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+    backdrop-filter: blur(8px);
+    background: rgba(17, 24, 39, 0.2);
+    
+    /* Scroll customizado */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 58, 237, 0.5) transparent;
+}
+
+#fab-options::-webkit-scrollbar {
+    width: 4px;
+}
+
+#fab-options::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#fab-options::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.5);
+    border-radius: 2px;
+}
+
+/* Opções individuais do FAB */
+.fab-option {
+    width: var(--fab-option-size-base) !important;
+    height: var(--fab-option-size-base) !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    
+    /* Layout centralizado */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    /* Visual */
+    border-radius: 50% !important;
+    font-size: 1rem !important;
+    
+    /* Touch otimizations */
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none;
+    
+    /* Transições */
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease;
+    
+    /* Backdrop melhorado */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Estados interativos */
+#fab-main:hover,
+#fab-main:focus-visible {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+}
+
+#fab-main:active {
+    transform: scale(0.95) !important;
+}
+
+.fab-option:hover,
+.fab-option:focus-visible {
+    transform: scale(1.1);
+}
+
+.fab-option:active {
+    transform: scale(0.9) !important;
+}
+
+/* Focus styles para acessibilidade */
+#fab-main:focus-visible,
+.fab-option:focus-visible {
+    outline: 2px solid #ffffff !important;
+    outline-offset: 2px;
+}
+
+/* ===== BREAKPOINTS RESPONSIVOS ===== */
+
+/* Dispositivos muito pequenos (≤320px) */
+@media (max-width: 320px) {
+    :root {
+        --fab-size-base: 2.5rem;
+        --fab-option-size-base: 2rem;
+        --fab-margin-base: 0.5rem;
+    }
+    
+    #fab-main {
+        font-size: 1rem !important;
+    }
+    
+    .fab-option {
+        font-size: 0.875rem !important;
+    }
+    
+    #fab-options {
+        bottom: calc(100% + 0.25rem) !important;
+        gap: 0.25rem;
+        max-height: 40vh !important;
+    }
+}
+
+/* Smartphones pequenos (321px - 375px) */
+@media (min-width: 321px) and (max-width: 375px) {
+    :root {
+        --fab-size-base: 2.75rem;
+        --fab-option-size-base: 2.25rem;
+        --fab-margin-base: 0.75rem;
+    }
+    
+    #fab-options {
+        max-height: 45vh !important;
+    }
+}
+
+/* Smartphones normais (376px - 480px) */
+@media (min-width: 376px) and (max-width: 480px) {
+    :root {
+        --fab-margin-base: 0.875rem;
+    }
+}
+
+/* Tablets pequenos (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    :root {
+        --fab-size-base: 3.25rem;
+        --fab-option-size-base: 2.75rem;
+        --fab-margin-base: 1rem;
+    }
+    
+    #fab-main {
+        font-size: 1.375rem !important;
+    }
+    
+    .fab-option {
+        font-size: 1.125rem !important;
+    }
+    
+    #fab-options {
+        gap: 0.75rem;
+        max-height: 60vh !important;
+    }
+}
+
+/* Desktop (≥769px) */
+@media (min-width: 769px) {
+    :root {
+        --fab-size-base: 3.5rem;
+        --fab-option-size-base: 3rem;
+        --fab-margin-base: 1.5rem;
+    }
+    
+    #fab-main {
+        font-size: 1.5rem !important;
+    }
+    
+    .fab-option {
+        font-size: 1.25rem !important;
+    }
+    
+    #fab-options {
+        gap: 1rem;
+        bottom: calc(100% + 0.75rem) !important;
+        max-height: 70vh !important;
+    }
+}
+
+/* ===== ORIENTAÇÕES ESPECIAIS ===== */
+
+/* Landscape em dispositivos pequenos */
+@media (orientation: landscape) and (max-height: 500px) {
+    #fab-menu {
+        right: 0.75rem !important;
+        bottom: 0.75rem !important;
+    }
+    
+    #fab-options {
+        max-height: 30vh !important;
+        
+        /* Em landscape muito baixo, considerar layout horizontal */
+        flex-direction: row;
+        flex-wrap: wrap;
+        bottom: auto !important;
+        top: 50% !important;
+        transform: translateY(-50%);
+        right: calc(100% + 0.5rem) !important;
+        left: auto;
+        max-width: 40vw !important;
+    }
+}
+
+/* Dispositivos com altura muito baixa */
+@media (max-height: 400px) {
+    #fab-options {
+        max-height: 25vh !important;
+    }
+}
+
+/* ===== ACESSIBILIDADE ===== */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    #fab-main,
+    .fab-option {
+        border: 2px solid #ffffff !important;
+        background: #000000 !important;
+    }
+    
+    #fab-options {
+        background: rgba(0, 0, 0, 0.95) !important;
+        border: 1px solid #ffffff !important;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #fab-main,
+    .fab-option,
+    #fab-backdrop {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    #fab-main:hover,
+    #fab-main:focus-visible,
+    .fab-option:hover,
+    .fab-option:focus-visible {
+        transform: none !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    #fab-menu,
+    #fab-backdrop {
+        display: none !important;
+    }
+}
+
+/* ===== ANIMAÇÕES ===== */
+
+/* Entrada das opções */
+@keyframes fab-option-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#fab-options:not(.hidden) .fab-option {
+    animation: fab-option-enter 0.2s ease backwards;
+}
+
+#fab-options:not(.hidden) .fab-option:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+#fab-options:not(.hidden) .fab-option:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+#fab-options:not(.hidden) .fab-option:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+/* ===== SEGURANÇA ADICIONAL ===== */
+
+/* Garantir que o FAB nunca interfira com o conteúdo */
+#fab-menu {
+    isolation: isolate;
+}
+
+/* Prevenir clique acidental em elementos atrás */
+#fab-menu::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    bottom: -10px;
+    left: -10px;
+    z-index: -1;
+}
+
+/* Backdrop para mobile */
+.fab-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: calc(var(--fab-z-index) - 1) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    backdrop-filter: blur(2px) !important;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: auto !important;
+}
+
+.fab-backdrop.show {
+    opacity: 1 !important;
+}
