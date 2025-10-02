@@ -1647,3 +1647,301 @@ window.addEventListener('load', () => {
         console.log(`Page Load Time: ${perfData.loadEventEnd - perfData.fetchStart}ms`);
     }
 });
+
+// Sistema de Animação de Dados nas Linhas de Conexão
+class DataFlowAnimator {
+    constructor() {
+        this.connectionLines = [];
+        this.particles = [];
+        this.isActive = true;
+
+        // Definir serviços para animação
+        this.services = [
+            { name: 'sites-responsivos', selector: '[data-service="sites-responsivos"]' },
+            { name: 'api-rest', selector: '[data-service="api-rest"]' },
+            { name: 'loja-virtual', selector: '[data-service="loja-virtual"]' },
+            { name: 'pwa', selector: '[data-service="pwa"]' },
+            { name: 'mobile-apps', selector: '[data-service="mobile-apps"]' },
+            { name: 'crm', selector: '[data-service="crm"]' },
+            { name: 'database', selector: '[data-service="database"]' },
+            { name: 'auth-system', selector: '[data-service="auth-system"]' }
+        ];
+
+        this.init();
+    }
+
+    init() {
+        // Aguardar um pouco para garantir que os elementos estejam carregados
+        setTimeout(() => {
+            console.log('🔄 Iniciando DataFlowAnimator...');
+            this.setupConnectionLines();
+            this.startDataFlow();
+            console.log('🔄 Sistema de fluxo de dados inicializado');
+            console.log(`📊 Linhas criadas: ${this.connectionLines.length}`);
+        }, 2000);
+    }
+
+    setupConnectionLines() {
+        // Encontrar todas as linhas de conexão SVG
+        const svgContainer = document.getElementById('connection-lines');
+        if (!svgContainer) {
+            console.warn('❌ Container SVG não encontrado');
+            return;
+        }
+
+        // Criar linhas de conexão se não existirem
+        this.createConnectionLines(svgContainer);
+
+        // Adicionar partículas de dados
+        this.createDataParticles();
+    }
+
+    createConnectionLines(svgContainer) {
+        const serviceNodes = document.querySelectorAll('.service-node');
+        const centerHub = document.getElementById('central-hub');
+
+        if (!centerHub) return;
+
+        const svgRect = svgContainer.getBoundingClientRect();
+        const hubRect = centerHub.getBoundingClientRect();
+        const hubCenterX = hubRect.left + hubRect.width / 2 - svgRect.left;
+        const hubCenterY = hubRect.top + hubRect.height / 2 - svgRect.top;
+
+        serviceNodes.forEach((node, index) => {
+            const nodeRect = node.getBoundingClientRect();
+            const nodeCenterX = nodeRect.left + nodeRect.width / 2 - svgRect.left;
+            const nodeCenterY = nodeRect.top + nodeRect.height / 2 - svgRect.top;
+
+            // Criar linha conectando hub ao serviço
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            line.classList.add('connection-line');
+            line.setAttribute('id', `connection-${index}`);
+
+            // Criar caminho SVG do hub para o serviço
+            const pathData = `M ${hubCenterX} ${hubCenterY} Q ${(hubCenterX + nodeCenterX) / 2} ${(hubCenterY + nodeCenterY) / 2 - 50} ${nodeCenterX} ${nodeCenterY}`;
+            line.setAttribute('d', pathData);
+
+            // Adicionar linha ao SVG
+            svgContainer.appendChild(line);
+            this.connectionLines.push({
+                element: line,
+                path: pathData,
+                targetNode: node,
+                index: index
+            });
+
+            // Ativar linha aleatoriamente
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    line.classList.add('active');
+                    setTimeout(() => line.classList.remove('active'), 2000);
+                }
+            }, 3000 + Math.random() * 2000);
+        });
+    }
+
+    createDataParticles() {
+        const svg = document.getElementById('connection-lines');
+        if (!svg) {
+            console.warn('❌ SVG connection-lines não encontrado');
+            return;
+        }
+
+        // Obter referências dos elementos
+        const hub = document.getElementById('central-hub');
+        if (!hub) {
+            console.warn('❌ Hub central não encontrado');
+            return;
+        }
+
+        console.log('✅ Elementos encontrados, criando partículas...');
+
+        // Criar container para as partículas
+        let particleContainer = document.querySelector('.particle-container');
+        if (!particleContainer) {
+            particleContainer = document.createElement('div');
+            particleContainer.className = 'particle-container';
+            particleContainer.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 10;
+            `;
+            svg.parentElement.appendChild(particleContainer);
+        }
+
+        // Obter posição do hub relativa ao container SVG
+        const svgRect = svg.getBoundingClientRect();
+        const hubRect = hub.getBoundingClientRect();
+
+        const hubCenter = {
+            x: hubRect.left - svgRect.left + hubRect.width / 2,
+            y: hubRect.top - svgRect.top + hubRect.height / 2
+        };
+
+        // Criar partículas para cada serviço
+        this.services.forEach((service, index) => {
+            const serviceElement = document.querySelector(service.selector);
+            if (!serviceElement) {
+                console.warn(`❌ Serviço não encontrado: ${service.selector}`);
+                return;
+            }
+
+            const serviceRect = serviceElement.getBoundingClientRect();
+            const serviceCenter = {
+                x: serviceRect.left - svgRect.left + serviceRect.width / 2,
+                y: serviceRect.top - svgRect.top + serviceRect.height / 2
+            };
+
+            console.log(`✅ Serviço ${service.name} encontrado em:`, serviceCenter);
+
+            // Criar e animar partícula com delay
+            setTimeout(() => {
+                this.animateParticleFromHubToService(particleContainer, hubCenter, serviceCenter, service.name);
+            }, index * 600);
+        });
+
+        // Criar ciclo contínuo de partículas
+        setInterval(() => {
+            if (this.isActive) {
+                const randomService = this.services[Math.floor(Math.random() * this.services.length)];
+                const serviceElement = document.querySelector(randomService.selector);
+
+                if (serviceElement) {
+                    const serviceRect = serviceElement.getBoundingClientRect();
+                    const serviceCenter = {
+                        x: serviceRect.left - svgRect.left + serviceRect.width / 2,
+                        y: serviceRect.top - svgRect.top + serviceRect.height / 2
+                    };
+
+                    this.animateParticleFromHubToService(particleContainer, hubCenter, serviceCenter, randomService.name);
+                    console.log(`🌟 Partícula criada para ${randomService.name}`);
+                }
+            }
+        }, 2000);
+    }
+
+    animateParticleFromHubToService(container, hubCenter, serviceCenter, serviceName) {
+        console.log(`🎯 Criando partícula: ${serviceName} de (${hubCenter.x}, ${hubCenter.y}) para (${serviceCenter.x}, ${serviceCenter.y})`);
+
+        const particle = document.createElement('div');
+        particle.className = 'data-particle from-hub';
+
+        // Posição inicial no hub
+        particle.style.cssText = `
+            position: absolute;
+            left: ${hubCenter.x}px;
+            top: ${hubCenter.y}px;
+            transform: translate(-50%, -50%);
+        `;
+
+        container.appendChild(particle);
+        console.log('✅ Partícula adicionada ao container');        // Animar para o serviço
+        const duration = 2000;
+        const startTime = performance.now();
+
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Easing suave
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+            // Calcular posição atual
+            const currentX = hubCenter.x + (serviceCenter.x - hubCenter.x) * easeProgress;
+            const currentY = hubCenter.y + (serviceCenter.y - hubCenter.y) * easeProgress;
+
+            // Adicionar curva
+            const curve = Math.sin(progress * Math.PI) * 20;
+            const finalY = currentY - curve;
+
+            particle.style.left = `${currentX}px`;
+            particle.style.top = `${finalY}px`;
+
+            // Controlar opacidade
+            if (progress < 0.1) {
+                particle.style.opacity = progress * 10;
+            } else if (progress > 0.9) {
+                particle.style.opacity = (1 - progress) * 10;
+            } else {
+                particle.style.opacity = 1;
+            }
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                // Remover partícula
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 100);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    } startDataFlow() {
+        // Simular atividade de dados
+        setInterval(() => {
+            if (!this.isActive) return;
+
+            // Ativar linhas aleatoriamente
+            this.connectionLines.forEach(connectionData => {
+                if (Math.random() > 0.8) {
+                    connectionData.element.classList.add('active');
+                    setTimeout(() => {
+                        connectionData.element.classList.remove('active');
+                    }, 1500 + Math.random() * 1000);
+                }
+            });
+        }, 2000);
+    }
+
+    pause() {
+        this.isActive = false;
+        // Pausar animações CSS
+        this.connectionLines.forEach(connectionData => {
+            connectionData.element.style.animationPlayState = 'paused';
+        });
+        this.particles.forEach(particle => {
+            particle.style.animationPlayState = 'paused';
+        });
+    }
+
+    resume() {
+        this.isActive = true;
+        // Retomar animações CSS
+        this.connectionLines.forEach(connectionData => {
+            connectionData.element.style.animationPlayState = 'running';
+        });
+        this.particles.forEach(particle => {
+            particle.style.animationPlayState = 'running';
+        });
+    }
+}
+
+// Inicializar sistema de fluxo de dados
+let dataFlowAnimator;
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        dataFlowAnimator = new DataFlowAnimator();
+
+        // Integrar com sistema de scroll otimizado
+        if (window.optimizedAnimationController) {
+            const originalPause = window.optimizedAnimationController.pause;
+            window.optimizedAnimationController.pause = function () {
+                originalPause.call(this);
+                if (dataFlowAnimator) dataFlowAnimator.pause();
+            };
+
+            const originalResume = window.optimizedAnimationController.resume;
+            window.optimizedAnimationController.resume = function () {
+                originalResume.call(this);
+                if (dataFlowAnimator) dataFlowAnimator.resume();
+            };
+        }
+    }, 1500);
+});
