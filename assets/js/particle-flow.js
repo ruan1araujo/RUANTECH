@@ -2,8 +2,12 @@
 class FiberOpticDataFlow {
     constructor() {
         this.isActive = true;
+        this.isPaused = false; // Para controle de scroll
         this.lightPulses = [];
         this.particleContainer = null;
+        this.animationFrames = []; // Para cancelar animações durante scroll
+        this.pulseInterval = null; // Para controlar intervalos
+        this.sequenceInterval = null; // Para controlar intervalos
 
         console.log('💡 Iniciando Sistema de Fibra Óptica...');
         this.init();
@@ -68,16 +72,16 @@ class FiberOpticDataFlow {
         // Criar primeira sequência de pulsos luminosos
         this.createLightSequence();
 
-        // Pulsos periódicos individuais
-        setInterval(() => {
-            if (this.isActive) {
+        // Pulsos periódicos individuais - armazenar para controle
+        this.pulseInterval = setInterval(() => {
+            if (this.isActive && !this.isPaused) {
                 this.createRandomLightPulse();
             }
         }, 3000);
 
-        // Sequências completas ocasionais
-        setInterval(() => {
-            if (this.isActive) {
+        // Sequências completas ocasionais - armazenar para controle
+        this.sequenceInterval = setInterval(() => {
+            if (this.isActive && !this.isPaused) {
                 this.createLightSequence();
             }
         }, 12000);
@@ -163,8 +167,16 @@ class FiberOpticDataFlow {
     animateLightAlongPath(lightPulse, pathElement, pathLength) {
         const duration = 2000 + Math.random() * 1000; // 2-3 segundos
         const startTime = performance.now();
+        let animationId = null;
 
         const animate = (currentTime) => {
+            // Pausar durante scroll
+            if (this.isPaused || !this.isActive) {
+                // Aguardar retomada
+                animationId = requestAnimationFrame(animate);
+                return;
+            }
+
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
@@ -203,8 +215,9 @@ class FiberOpticDataFlow {
                 const glowIntensity = 0.8 + Math.sin(progress * Math.PI * 6) * 0.2;
                 lightPulse.style.filter = `brightness(${glowIntensity}) saturate(1.2)`;
 
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
+                if (progress < 1 && this.isActive) {
+                    animationId = requestAnimationFrame(animate);
+                    this.animationFrames.push(animationId);
                 } else {
                     this.removeLightPulse(lightPulse);
                 }
@@ -215,7 +228,8 @@ class FiberOpticDataFlow {
             }
         };
 
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
+        this.animationFrames.push(animationId);
     }
 
     removeLightPulse(lightPulse) {
@@ -231,11 +245,46 @@ class FiberOpticDataFlow {
 
     pause() {
         this.isActive = false;
-        console.log('⏸️ Sistema de fibra óptica pausado');
+        this.isPaused = true;
+        
+        // Cancelar todas as animações ativas
+        this.animationFrames.forEach(id => cancelAnimationFrame(id));
+        this.animationFrames = [];
+        
+        // Pausar intervalos
+        if (this.pulseInterval) {
+            clearInterval(this.pulseInterval);
+            this.pulseInterval = null;
+        }
+        if (this.sequenceInterval) {
+            clearInterval(this.sequenceInterval);
+            this.sequenceInterval = null;
+        }
+        
+        // Reduzir opacidade das partículas durante scroll
+        if (this.particleContainer) {
+            this.particleContainer.style.opacity = '0.3';
+        }
+        
+        console.log('⏸️ Sistema de fibra óptica pausado (scroll)');
     }
 
     resume() {
         this.isActive = true;
+        this.isPaused = false;
+        
+        // Restaurar opacidade
+        if (this.particleContainer) {
+            this.particleContainer.style.opacity = '1';
+        }
+        
+        // Reiniciar sistema após um pequeno delay
+        setTimeout(() => {
+            if (this.isActive && !this.isPaused) {
+                this.startFiberOpticFlow();
+            }
+        }, 300);
+        
         console.log('▶️ Sistema de fibra óptica retomado');
     }
 }

@@ -88,22 +88,40 @@ class RuantechApp {
             this.network.resize();
         });
 
-        // Pausar animações durante o scroll
+        // Pausar animações durante o scroll - OTIMIZADO
         let scrollTimeout;
+        let isScrolling = false;
+        
         window.addEventListener('scroll', () => {
-            if (this.particles && typeof this.particles.pause === 'function') {
-                this.particles.pause();
+            // Marcar início do scroll
+            if (!isScrolling) {
+                isScrolling = true;
+                
+                // Pausar sistemas de animação
+                if (this.particles && typeof this.particles.pause === 'function') {
+                    this.particles.pause();
+                }
+                if (this.search && typeof this.search.hideTooltip === 'function') {
+                    this.search.hideTooltip();
+                }
+                if (this.network && this.network.pauseAnimations) {
+                    this.network.pauseAnimations();
+                }
             }
-            if (this.search && typeof this.search.hideTooltip === 'function') {
-                this.search.hideTooltip();
-            }
+            
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+                
+                // Retomar sistemas de animação
                 if (this.particles && typeof this.particles.resume === 'function') {
                     this.particles.resume();
                 }
-            }, 300);
-        });
+                if (this.network && this.network.resumeAnimations) {
+                    this.network.resumeAnimations();
+                }
+            }, 200); // Reduzido de 300ms para 200ms
+        }, { passive: true }); // Adicionar passive para performance
     }
 
     handleServiceClick(e) {
@@ -428,13 +446,21 @@ class RuantechApp {
     }
 }
 
-// Network Connection Manager
+// Network Connection Manager - Versão Otimizada para Performance
 class NetworkManager {
     constructor() {
         this.svg = document.getElementById('connection-lines');
         this.connections = [];
         this.nodes = [];
         this.isInitialized = false;
+        this.isCreatingConnections = false;
+        this.scrollTimeout = null;
+        this.isScrolling = false;
+        this.connectionBatch = 0;
+        this.maxBatchSize = 3; // Carregar 3 conexões por vez
+        this.animationsPaused = false; // Para controle de animações
+        this.pulseIntervals = []; // Para rastrear intervalos de pulso
+        this.container = document.querySelector('.services-network') || document.body;
 
         // Mapeamento de cores por categoria
         this.categoryColors = {
@@ -447,32 +473,182 @@ class NetworkManager {
             'hub': '#7c3aed'            // Cor do hub central
         };
 
-        // Aguardar carregamento completo
-        setTimeout(() => this.init(), 3000);
+        // Aguardar carregamento completo com delay maior
+        setTimeout(() => this.init(), 4000);
 
-        // Event listener para resize com debounce
+        // Event listener para resize com debounce otimizado
+        this.setupResizeHandler();
+        
+        // Event listener para scroll otimizado
+        this.setupScrollHandler();
+
+        console.log('NetworkManager otimizado iniciado');
+    }
+
+    setupScrollHandler() {
+        let scrollThrottle = null;
+        
+        window.addEventListener('scroll', () => {
+            // Pausar criação de conexões durante scroll
+            this.isScrolling = true;
+            
+            // Throttle para performance
+            if (scrollThrottle) return;
+            
+            scrollThrottle = setTimeout(() => {
+                scrollThrottle = null;
+            }, 16); // 60fps
+            
+            // Limpar timeout anterior
+            clearTimeout(this.scrollTimeout);
+            
+            // Definir fim do scroll
+            this.scrollTimeout = setTimeout(() => {
+                this.isScrolling = false;
+                
+                // Retomar criação de conexões se necessário
+                if (this.isInitialized && !this.isCreatingConnections) {
+                    this.resumeConnectionCreation();
+                }
+            }, 150);
+        }, { passive: true });
+    }
+
+    setupResizeHandler() {
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                if (this.isInitialized) {
+                if (this.isInitialized && !this.isScrolling) {
                     this.handleResize();
                 }
             }, 300);
         });
-
-        console.log('NetworkManager responsivo iniciado');
     }
 
     init() {
-        console.log('Iniciando conexões...');
+        console.log('🔄 Iniciando conexões otimizadas...');
+        
+        // Usar requestIdleCallback para não bloquear a UI
+        if (window.requestIdleCallback) {
+            window.requestIdleCallback(() => {
+                this.initializeStep1();
+            });
+        } else {
+            // Fallback para navegadores sem suporte
+            setTimeout(() => this.initializeStep1(), 100);
+        }
+    }
+
+    initializeStep1() {
         this.setupSVG();
+        
+        // Próximo passo com delay
+        setTimeout(() => this.initializeStep2(), 50);
+    }
+
+    initializeStep2() {
         this.calculateNodePositions();
-        this.createConnections();
+        
+        // Próximo passo com delay
+        setTimeout(() => this.initializeStep3(), 50);
+    }
+
+    initializeStep3() {
+        this.createConnectionsProgressive();
         this.setupHoverEffects();
-        this.startAnimations();
         this.isInitialized = true;
-        console.log('Conexões criadas:', this.connections.length);
+        
+        console.log('✅ Conexões inicializadas progressivamente');
+    }
+
+    createConnectionsProgressive() {
+        if (!this.svg || !this.hubPosition || this.nodes.length === 0) {
+            console.log('❌ SVG, Hub ou Nodes não encontrados!');
+            return;
+        }
+
+        console.log('🔗 Criando conexões em lotes...');
+        this.isCreatingConnections = true;
+
+        // Limpar conexões anteriores
+        this.svg.querySelectorAll('path, line').forEach(el => el.remove());
+        this.connections = [];
+
+        // Criar conexões em lotes para não travar a UI
+        this.createConnectionBatch(0);
+    }
+
+    createConnectionBatch(startIndex) {
+        if (startIndex >= this.nodes.length) {
+            this.isCreatingConnections = false;
+            this.startAnimations();
+            console.log(`✅ Total conexões criadas: ${this.connections.length}`);
+            return;
+        }
+
+        // Pausar se estiver scrollando
+        if (this.isScrolling) {
+            setTimeout(() => this.createConnectionBatch(startIndex), 100);
+            return;
+        }
+
+        // Criar batch de conexões
+        const endIndex = Math.min(startIndex + this.maxBatchSize, this.nodes.length);
+        
+        for (let i = startIndex; i < endIndex; i++) {
+            this.createSingleConnection(this.nodes[i]);
+        }
+
+        console.log(`📊 Lote ${Math.floor(startIndex / this.maxBatchSize) + 1}: ${endIndex - startIndex} conexões criadas`);
+
+        // Próximo lote com requestAnimationFrame para performance
+        requestAnimationFrame(() => {
+            setTimeout(() => this.createConnectionBatch(endIndex), 50);
+        });
+    }
+
+    createSingleConnection(node) {
+        // Usar linha simples para melhor performance
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+        line.setAttribute('x1', this.hubPosition.x);
+        line.setAttribute('y1', this.hubPosition.y);
+        line.setAttribute('x2', node.x);
+        line.setAttribute('y2', node.y);
+
+        // Determinar cor baseada na categoria
+        const connectionColor = this.categoryColors[node.category] || this.categoryColors.hub;
+
+        // Estilos otimizados
+        line.setAttribute('stroke', connectionColor);
+        line.setAttribute('stroke-width', '2');
+        line.setAttribute('stroke-opacity', '0.6');
+        line.setAttribute('fill', 'none');
+
+        line.classList.add('connection-line');
+        line.classList.add(`category-${node.category || 'hub'}`);
+
+        // Usar transform3d para aceleração de hardware
+        line.style.willChange = 'opacity, stroke-width';
+
+        this.svg.appendChild(line);
+
+        this.connections.push({
+            element: line,
+            nodeA: 'hub',
+            nodeB: node.id,
+            category: node.category,
+            color: connectionColor,
+            type: 'primary'
+        });
+    }
+
+    resumeConnectionCreation() {
+        // Retomar criação se foi interrompida
+        if (this.isCreatingConnections) {
+            console.log('🔄 Retomando criação de conexões...');
+        }
     }
 
     setupSVG() {
@@ -850,41 +1026,103 @@ class NetworkManager {
     }
 
     startAnimations() {
-        console.log('Iniciando animações coloridas...');
+        console.log('🎨 Iniciando animações otimizadas...');
 
-        // Mostrar todas as linhas gradualmente com suas cores
-        this.connections.forEach((conn, index) => {
-            setTimeout(() => {
-                conn.element.style.opacity = '0.6';
-                conn.element.style.stroke = conn.color;
-            }, index * 50);
-        });
+        // Mostrar linhas gradualmente usando requestAnimationFrame
+        this.showConnectionsGradually();
 
-        // Pulsos periódicos na rede com cores originais
-        setInterval(() => {
-            if (this.connections.length > 0) {
-                const randomConnection = this.connections[Math.floor(Math.random() * this.connections.length)];
-                const originalWidth = randomConnection.element.getAttribute('stroke-width');
-                const originalOpacity = randomConnection.element.getAttribute('stroke-opacity');
+        // Pulsos periódicos otimizados
+        this.startOptimizedPulses();
 
-                // Aplicar pulso com cor original
-                randomConnection.element.style.strokeWidth = '4';
-                randomConnection.element.style.strokeOpacity = '1';
-                randomConnection.element.style.stroke = randomConnection.color;
-                randomConnection.element.style.filter = 'url(#pulseGlow)';
+        console.log('✅ Animações otimizadas iniciadas!');
+    }
 
-                setTimeout(() => {
-                    randomConnection.element.style.strokeWidth = originalWidth;
-                    randomConnection.element.style.strokeOpacity = originalOpacity;
-                    randomConnection.element.style.filter = 'url(#glow)';
-                }, 1500);
+    showConnectionsGradually() {
+        let index = 0;
+        const showBatch = () => {
+            if (index >= this.connections.length) return;
+            
+            // Pausar se estiver scrollando
+            if (this.isScrolling) {
+                setTimeout(showBatch, 100);
+                return;
             }
-        }, 3000);
 
-        // Pulsos automáticos de dados saindo do hub
-        this.startAutomaticDataFlow();
+            // Mostrar batch de 5 conexões por frame
+            const batchSize = 5;
+            const endIndex = Math.min(index + batchSize, this.connections.length);
+            
+            for (let i = index; i < endIndex; i++) {
+                const conn = this.connections[i];
+                if (conn && conn.element) {
+                    conn.element.style.opacity = '0.6';
+                    conn.element.style.stroke = conn.color;
+                }
+            }
+            
+            index = endIndex;
+            
+            if (index < this.connections.length) {
+                requestAnimationFrame(() => setTimeout(showBatch, 30));
+            }
+        };
+        
+        requestAnimationFrame(showBatch);
+    }
 
-        console.log('Animações coloridas iniciadas!');
+    startOptimizedPulses() {
+        // Pulsos periódicos com throttling
+        let lastPulseTime = 0;
+        const pulseInterval = 4000; // 4 segundos
+        
+        const createPulse = () => {
+            const now = Date.now();
+            
+            // Throttling - não criar pulsos muito frequentes
+            if (now - lastPulseTime < pulseInterval) {
+                setTimeout(createPulse, pulseInterval - (now - lastPulseTime));
+                return;
+            }
+            
+            // Pausar durante scroll
+            if (this.isScrolling || this.connections.length === 0) {
+                setTimeout(createPulse, 1000);
+                return;
+            }
+            
+            // Criar pulso otimizado
+            this.createOptimizedPulse();
+            lastPulseTime = now;
+            
+            setTimeout(createPulse, pulseInterval);
+        };
+        
+        setTimeout(createPulse, 2000); // Primeiro pulso após 2s
+    }
+
+    createOptimizedPulse() {
+        if (this.connections.length === 0) return;
+        
+        const randomConnection = this.connections[Math.floor(Math.random() * this.connections.length)];
+        if (!randomConnection || !randomConnection.element) return;
+
+        const element = randomConnection.element;
+        
+        // Usar apenas propriedades CSS otimizadas
+        element.style.transition = 'stroke-width 0.3s ease, stroke-opacity 0.3s ease';
+        element.style.strokeWidth = '3';
+        element.style.strokeOpacity = '1';
+
+        // Voltar ao normal
+        setTimeout(() => {
+            element.style.strokeWidth = '2';
+            element.style.strokeOpacity = '0.6';
+            
+            // Limpar transition após animação
+            setTimeout(() => {
+                element.style.transition = '';
+            }, 300);
+        }, 1000);
     }
 
     startAutomaticDataFlow() {
@@ -939,6 +1177,42 @@ class NetworkManager {
     // Reposicionar conexões quando a tela redimensiona (método legado)
     resize() {
         this.handleResize();
+    }
+    
+    // Métodos de controle de animação
+    pauseAnimations() {
+        this.isScrolling = true;
+        this.animationsPaused = true;
+        
+        // Parar pulsos em massa
+        this.pulseIntervals.forEach(interval => clearInterval(interval));
+        this.pulseIntervals = [];
+        
+        // Reduzir intensidade das animações durante scroll
+        const connections = this.container.querySelectorAll('.connection-line');
+        connections.forEach(line => {
+            line.style.opacity = '0.3';
+            line.style.willChange = 'auto'; // Otimizar GPU
+        });
+    }
+    
+    resumeAnimations() {
+        if (!this.animationsPaused) return;
+        
+        this.isScrolling = false;
+        this.animationsPaused = false;
+        
+        // Aguardar um frame antes de retomar
+        requestAnimationFrame(() => {
+            const connections = this.container.querySelectorAll('.connection-line');
+            connections.forEach(line => {
+                line.style.opacity = '';
+                line.style.willChange = 'transform, opacity';
+            });
+            
+            // Retomar pulsos com delay escalonado
+            this.startOptimizedPulses();
+        });
     }
 }
 
