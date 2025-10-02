@@ -505,105 +505,54 @@ class SequentialAnimator {
         this.animationQueue = [];
         this.isAnimating = false;
         this.observedElements = new Set();
-        this.animatedCategories = new Set();
         this.setupIntersectionObserver();
-        this.initializeCards();
-    }
-
-    initializeCards() {
-        // Preparar todos os cards com estado inicial
-        const allCards = document.querySelectorAll('.service-node');
-        allCards.forEach(card => {
-            card.style.willChange = 'transform, opacity';
-            card.classList.add('card-hidden');
-        });
     }
 
     setupIntersectionObserver() {
         this.observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                // Skip animation if scrolling too fast
-                if (isScrollingFast) return;
-
                 if (entry.isIntersecting && !this.observedElements.has(entry.target)) {
                     this.observedElements.add(entry.target);
 
                     if (entry.target.classList.contains('service-category')) {
-                        // Pequeno delay para scroll suave
-                        setTimeout(() => {
-                            if (!isScrollingFast) {
-                                this.animateCategory(entry.target);
-                            }
-                        }, 50);
+                        this.animateCategory(entry.target);
                     }
                 }
             });
         }, {
-            threshold: 0.1,
-            rootMargin: '100px'
+            threshold: 0.2,
+            rootMargin: '50px'
         });
     }
 
     animateCategory(category) {
-        // Prevenir animação duplicada
-        if (this.animatedCategories.has(category)) return;
-        this.animatedCategories.add(category);
-
         // Animar título da categoria
+        category.classList.add('category-visible');
+
         const title = category.querySelector('h3');
         if (title) {
-            title.classList.add('category-visible');
+            title.classList.add('category-title');
         }
 
-        // Animar cards com RequestAnimationFrame para melhor performance
+        // Animar cards sequencialmente
         const cards = category.querySelectorAll('.service-node');
-        this.animateCardsOptimized(cards);
+        this.animateCardsSequentially(cards);
     }
 
-    animateCardsOptimized(cards) {
-        // Adicionar efeito de scan inicial na categoria
-        const category = cards[0]?.closest('.service-category');
-        if (category) {
-            category.classList.add('tech-loading');
-        }
-
+    animateCardsSequentially(cards) {
         cards.forEach((card, index) => {
-            // Usar requestAnimationFrame para animações mais suaves
             setTimeout(() => {
-                requestAnimationFrame(() => {
-                    card.classList.remove('card-hidden');
-                    card.classList.add('card-visible');
+                // Efeito de conexão
+                card.classList.add('connecting');
 
-                    // Efeito de conexão após a animação inicial
-                    setTimeout(() => {
-                        card.classList.add('connected');
+                // Remover classe após animação
+                setTimeout(() => {
+                    card.classList.remove('connecting');
+                    card.classList.add('connected');
+                }, 200);
 
-                        // Ativar linha de conexão se existir
-                        const connectionLine = card.querySelector('.connection-line');
-                        if (connectionLine) {
-                            connectionLine.classList.add('active');
-                        }
-
-                        // Adicionar efeito de glitch ocasional para feel tecnológico
-                        if (Math.random() < 0.3) { // 30% chance
-                            setTimeout(() => {
-                                card.style.animation = 'glitch 0.3s ease-in-out';
-                                setTimeout(() => {
-                                    card.style.animation = '';
-                                }, 300);
-                            }, Math.random() * 1000);
-                        }
-                    }, 300);
-                });
-            }, index * 80); // Reduzido para 80ms para animação mais rápida
+            }, index * 150); // 150ms de intervalo entre cada card
         });
-
-        // Remover classe de loading após todas as animações
-        setTimeout(() => {
-            if (category) {
-                category.classList.remove('tech-loading');
-            }
-        }, cards.length * 80 + 500);
     }
 
     observeElement(element) {
@@ -617,60 +566,19 @@ class SequentialAnimator {
     }
 }
 
-// Advanced performance optimization
-let scrollTimeout;
-let animationFrameId;
+// Optimized scroll handler
+const handleScroll = throttle(() => {
+    // Simplified scroll handler - only update critical elements
+    if (window.innerWidth < 768) return;
 
-// Optimized scroll handler with fast scroll detection
-let lastScrollTime = 0;
-let scrollVelocity = 0;
-let isScrollingFast = false;
-
-const handleScroll = () => {
-    // Cancel previous animation frame
-    if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
+    // Update only visible viewport
+    const scrollY = window.pageYOffset;
+    if (scrollY > 100) {
+        document.body.classList.add('scrolled');
+    } else {
+        document.body.classList.remove('scrolled');
     }
-
-    // Use RAF for smooth updates
-    animationFrameId = requestAnimationFrame(() => {
-        // Calculate scroll velocity
-        const now = Date.now();
-        const currentScrollY = window.pageYOffset;
-        const timeDiff = now - lastScrollTime;
-
-        if (timeDiff > 0) {
-            const scrollDiff = Math.abs(currentScrollY - (window.lastScrollY || 0));
-            scrollVelocity = scrollDiff / timeDiff;
-
-            // If scrolling faster than 1.5 pixels per millisecond, disable animations
-            isScrollingFast = scrollVelocity > 1.5;
-
-            if (isScrollingFast) {
-                document.body.classList.add('fast-scrolling');
-                // Clear fast scrolling flag after 150ms of no scroll
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    document.body.classList.remove('fast-scrolling');
-                    isScrollingFast = false;
-                }, 150);
-            }
-        }
-
-        lastScrollTime = now;
-        window.lastScrollY = currentScrollY;
-
-        // Simplified scroll handler - only update critical elements
-        if (window.innerWidth < 768) return;
-
-        // Update only visible viewport
-        if (currentScrollY > 100) {
-            document.body.classList.add('scrolled');
-        } else {
-            document.body.classList.remove('scrolled');
-        }
-    });
-};
+}, 200); // Increased throttle to 200ms
 
 // Add scroll listener with passive option
 window.addEventListener('scroll', handleScroll, { passive: true });

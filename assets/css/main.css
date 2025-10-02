@@ -4,7 +4,7 @@
 :root {
     --bg-primary: #0a0a0a;
     --bg-secondary: #111827;
-    --bg-glass: rgba(17, 24, 39, 0.8);
+    --bg-glass: #111827;
     --text-primary: #f9fafb;
     --text-secondary: #d1d5db;
     --accent-primary: #7c3aed;
@@ -17,7 +17,7 @@
 [data-theme="light"] {
     --bg-primary: #f9fafb;
     --bg-secondary: #ffffff;
-    --bg-glass: rgba(255, 255, 255, 0.9);
+    --bg-glass: #ffffff;
     --text-primary: #111827;
     --text-secondary: #4b5563;
     --accent-primary: #7c3aed;
@@ -42,7 +42,7 @@
 
 /* Glassmorphism Effects */
 .glass {
-    background: rgba(17, 24, 39, 0.90) !important;
+    background: #111827 !important;
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-glass);
     box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
@@ -53,7 +53,7 @@
 }
 
 .glass-hover:hover {
-    background: rgba(31, 41, 55, 0.85) !important;
+    background: #1f2937 !important;
     border-color: var(--accent-primary);
     box-shadow: 0 20px 64px rgba(124, 58, 237, 0.3);
     transform: translateY(-4px);
@@ -61,7 +61,7 @@
 
 /* Service Nodes */
 .service-node {
-    background: rgba(17, 24, 39, 0.95) !important;
+    background: #111827 !important;
     border: 1px solid rgba(124, 58, 237, 0.3);
     position: relative;
     overflow: hidden;
@@ -73,6 +73,7 @@
 .service-node:hover {
     transform: translateY(-8px) scale(1.05);
     border-color: var(--accent-primary);
+    background: #1f2937 !important;
     box-shadow: 
         0 25px 50px rgba(124, 58, 237, 0.4),
         0 0 0 1px rgba(124, 58, 237, 0.5);
@@ -393,296 +394,6 @@ header nav {
 @keyframes flow-connection {
     0% { stroke-dashoffset: 100; }
     100% { stroke-dashoffset: 0; }
-}
-
-/* Optimized Card Animations */
-.service-node {
-    will-change: transform, opacity;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    border: 1px solid transparent;
-}
-
-.card-hidden {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-}
-
-.card-visible {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    animation: matrixLoad 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.connected {
-    position: relative;
-    border: 1px solid rgba(124, 58, 237, 0.3);
-    animation: holoBorder 6s ease-in-out infinite;
-}
-
-.connected::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        45deg,
-        transparent 30%,
-        rgba(124, 58, 237, 0.05) 50%,
-        transparent 70%
-    );
-    background-size: 200% 200%;
-    border-radius: inherit;
-    animation: dataStream 3s linear infinite;
-    pointer-events: none;
-}
-
-.connected::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border: 1px solid transparent;
-    border-radius: inherit;
-    background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary)) border-box;
-    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    opacity: 0;
-    animation: connectionGlow 0.8s ease-out 0.3s forwards;
-}
-
-.category-visible {
-    animation: fadeInScale 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Tech loading indicators */
-.tech-loading {
-    position: relative;
-    overflow: hidden;
-}
-
-.tech-loading::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(0, 255, 255, 0.8),
-        rgba(124, 58, 237, 0.8),
-        transparent
-    );
-    animation: scanLine 2s ease-in-out;
-    z-index: 1;
-}
-
-/* Network grid background effect */
-.service-category {
-    position: relative;
-}
-
-.service-category::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        linear-gradient(rgba(124, 58, 237, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124, 58, 237, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-}
-
-.service-category.category-visible::before {
-    opacity: 1;
-    animation: gridPulse 4s ease-in-out infinite;
-}
-
-/* Performance Optimized Keyframes */
-@keyframes slideInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(40px) scale(0.9);
-    }
-    60% {
-        transform: translateY(-5px) scale(1.02);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes fadeInScale {
-    0% {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes connectionGlow {
-    0% {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    50% {
-        opacity: 0.8;
-        transform: scale(1.1);
-    }
-    100% {
-        opacity: 0.6;
-        transform: scale(1);
-    }
-}
-
-/* Matrix-style loading animation */
-@keyframes matrixLoad {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-        filter: blur(5px);
-    }
-    20% {
-        opacity: 0.3;
-        filter: blur(3px);
-    }
-    50% {
-        opacity: 0.7;
-        transform: translateY(10px);
-        filter: blur(1px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-    }
-}
-
-/* Network connection simulation */
-@keyframes networkPulse {
-    0%, 100% {
-        box-shadow: 0 0 5px rgba(124, 58, 237, 0.3);
-    }
-    25% {
-        box-shadow: 0 0 15px rgba(124, 58, 237, 0.6), 0 0 25px rgba(124, 58, 237, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 25px rgba(124, 58, 237, 0.8), 0 0 35px rgba(124, 58, 237, 0.4);
-    }
-    75% {
-        box-shadow: 0 0 15px rgba(124, 58, 237, 0.6), 0 0 25px rgba(124, 58, 237, 0.3);
-    }
-}
-
-/* Data stream effect */
-@keyframes dataStream {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* Scan line effect */
-@keyframes scanLine {
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 100%;
-    }
-}
-
-/* Glitch effect for tech feel */
-@keyframes glitch {
-    0%, 100% {
-        transform: translate(0);
-    }
-    20% {
-        transform: translate(-2px, 2px);
-    }
-    40% {
-        transform: translate(-2px, -2px);
-    }
-    60% {
-        transform: translate(2px, 2px);
-    }
-    80% {
-        transform: translate(2px, -2px);
-    }
-}
-
-/* Grid pulse effect */
-@keyframes gridPulse {
-    0%, 100% {
-        opacity: 0.3;
-    }
-    50% {
-        opacity: 0.6;
-    }
-}
-
-/* Holographic border effect */
-@keyframes holoBorder {
-    0% {
-        border-color: rgba(124, 58, 237, 0.5);
-        box-shadow: 0 0 5px rgba(124, 58, 237, 0.3);
-    }
-    33% {
-        border-color: rgba(59, 130, 246, 0.5);
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-    }
-    66% {
-        border-color: rgba(0, 255, 255, 0.5);
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    }
-    100% {
-        border-color: rgba(124, 58, 237, 0.5);
-        box-shadow: 0 0 5px rgba(124, 58, 237, 0.3);
-    }
-}
-
-/* Disable animations during fast scrolling */
-@media (prefers-reduced-motion: reduce) {
-    .service-node,
-    .card-visible,
-    .connected::after,
-    .category-visible {
-        animation: none !important;
-        transition: none !important;
-    }
-}
-
-/* Fast scrolling optimization */
-.fast-scrolling .service-node,
-.fast-scrolling .card-visible,
-.fast-scrolling .connected::after,
-.fast-scrolling .category-visible {
-    animation-duration: 0.1s !important;
-    transition-duration: 0.1s !important;
-}
-
-.fast-scrolling .connection-line {
-    animation: none !important;
 }
 
 /* Loading States */

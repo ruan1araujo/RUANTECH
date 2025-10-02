@@ -36,7 +36,8 @@
     <!-- CSS Personalizado -->
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/advanced.css">
-    <link rel="stylesheet" href="assets/css/fab-responsive.css">
+    <link rel="stylesheet" href="assets/css/optimized-animations.css">
+    
    
     <style>
         /* Replaces Tailwind @apply (not supported via CDN) with plain CSS */
@@ -445,11 +446,22 @@
                 </div>
 
                 <!-- Service Categories Grid -->
-                <div class="space-y-16 relative z-10">
+                <div class="space-y-20 relative z-10">
                     
                     <!-- Frontend Services -->
                     <div class="service-category" data-category="frontend">
-                        <h3 class="text-2xl font-bold text-center mb-8 text-blue-400 animate-slide-in">🎨 FRONTEND (5 Serviços)</h3>
+                        <div class="text-center mb-12 relative max-w-sm mx-auto">
+                            <!-- Fundo com transparência -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-900/95 via-cyan-900/95 to-blue-900/95 backdrop-blur-sm rounded-lg -mx-0.5 -my-1"></div>
+                            <div class="relative z-10 py-1 px-2">
+                                <h3 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent animate-slide-in">
+                                    🎨 FRONTEND
+                                </h3>
+                                <p class="text-gray-300 text-sm md:text-base font-medium">
+                                    5 Serviços • Interface & Experiência do Usuário
+                                </p>
+                            </div>
+                        </div>
                         <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6 justify-center mx-auto max-w-full sm:max-w-4xl px-0">
                             
                             <div class="service-node node glass glass-hover rounded-xl p-6 text-center group" data-service="sites-responsivos">
@@ -502,7 +514,18 @@
 
                     <!-- Backend Services -->
                     <div class="service-category" data-category="backend">
-                        <h3 class="text-2xl font-bold text-center mb-8 text-cyan-400 animate-slide-in">⚙️ BACKEND (5 Serviços)</h3>
+                        <div class="text-center mb-12 relative max-w-sm mx-auto">
+                            <!-- Fundo com transparência -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-cyan-900/95 via-teal-900/95 to-cyan-900/95 backdrop-blur-sm rounded-lg -mx-0.5 -my-1"></div>
+                            <div class="relative z-10 py-1 px-2">
+                                <h3 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 bg-clip-text text-transparent animate-slide-in">
+                                    ⚙️ BACKEND
+                                </h3>
+                                <p class="text-gray-300 text-sm md:text-base font-medium">
+                                    5 Serviços • Servidores & Infraestrutura
+                                </p>
+                            </div>
+                        </div>
                         <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6 justify-center mx-auto max-w-full sm:max-w-4xl px-0">
                             
                             <div class="service-node node glass glass-hover rounded-xl p-6 text-center group" data-service="api-rest">
@@ -559,7 +582,18 @@
 
                     <!-- E-commerce Services -->
                     <div class="service-category" data-category="ecommerce">
-                        <h3 class="text-2xl font-bold text-center mb-8 text-red-400 animate-slide-in">🛒 E-COMMERCE (4 Serviços)</h3>
+                        <div class="text-center mb-12 relative max-w-sm mx-auto">
+                            <!-- Fundo com transparência -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-red-900/95 via-pink-900/95 to-red-900/95 backdrop-blur-sm rounded-lg -mx-0.5 -my-1"></div>
+                            <div class="relative z-10 py-1 px-2">
+                                <h3 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-red-400 via-pink-400 to-red-500 bg-clip-text text-transparent animate-slide-in">
+                                    🛒 E-COMMERCE
+                                </h3>
+                                <p class="text-gray-300 text-sm md:text-base font-medium">
+                                    4 Serviços • Lojas Virtuais & Vendas Online
+                                </p>
+                            </div>
+                        </div>
                         <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-6 justify-center mx-auto max-w-full sm:max-w-3xl px-0">
                             
                             <div class="service-node node glass glass-hover rounded-xl p-6 text-center group" data-service="loja-virtual">
@@ -607,13 +641,20 @@
                         </div>
                     </div>
 
-                </div>
-
-                <!-- Continuação das outras categorias -->
-                
-                <!-- Systems Services -->
-                <div class="service-category" data-category="systems">
-                    <h3 class="text-2xl font-bold text-center mb-8 text-purple-400 animate-slide-in">🏢 SISTEMAS (5 Serviços)</h3>
+                    <!-- Systems Services -->
+                    <div class="service-category mt-20" data-category="systems">
+                        <div class="text-center mb-12 relative max-w-sm mx-auto">
+                            <!-- Fundo com transparência -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-900/95 via-violet-900/95 to-purple-900/95 backdrop-blur-sm rounded-lg -mx-0.5 -my-1"></div>
+                            <div class="relative z-10 py-1 px-2">
+                                <h3 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-violet-400 to-purple-500 bg-clip-text text-transparent animate-slide-in">
+                                    🏢 SISTEMAS
+                                </h3>
+                                <p class="text-gray-300 text-sm md:text-base font-medium">
+                                    5 Serviços • Gestão Empresarial & Automação
+                                </p>
+                            </div>
+                        </div>
                     <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6 justify-center mx-auto max-w-full sm:max-w-4xl px-0">
                         
                         <div class="service-node node glass glass-hover rounded-xl p-6 text-center group" data-service="crm">
@@ -672,11 +713,21 @@
                         </div>
 
                     </div>
-                </div>
 
-                <!-- Content Services -->
-                <div class="service-category" data-category="content">
-                    <h3 class="text-2xl font-bold text-center mb-8 text-yellow-400 animate-slide-in">📱 CONTEÚDO (5 Serviços)</h3>
+                    <!-- Content Services -->
+                    <div class="service-category mt-20" data-category="content">
+                        <div class="text-center mb-12 relative max-w-sm mx-auto">
+                            <!-- Fundo com transparência -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-yellow-900/95 via-orange-900/95 to-yellow-900/95 backdrop-blur-sm rounded-lg -mx-0.5 -my-1"></div>
+                            <div class="relative z-10 py-1 px-2">
+                                <h3 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent animate-slide-in">
+                                    📱 CONTEÚDO
+                                </h3>
+                                <p class="text-gray-300 text-sm md:text-base font-medium">
+                                    5 Serviços • Mídia & Gerenciamento de Conteúdo
+                                </p>
+                            </div>
+                        </div>
                     <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6 justify-center mx-auto max-w-full sm:max-w-4xl px-0">
                         
                         <div class="service-node node glass glass-hover rounded-xl p-6 text-center group" data-service="cms">
@@ -735,11 +786,21 @@
                         </div>
 
                     </div>
-                </div>
 
-                <!-- Automation Services -->
-                <div class="service-category" data-category="automation">
-                    <h3 class="text-2xl font-bold text-center mb-8 text-green-400 animate-slide-in">🤖 AUTOMAÇÃO (4 Serviços)</h3>
+                    <!-- Automation Services -->
+                    <div class="service-category mt-20" data-category="automation">
+                        <div class="text-center mb-12 relative max-w-sm mx-auto">
+                            <!-- Fundo com transparência -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-green-900/95 via-emerald-900/95 to-green-900/95 backdrop-blur-sm rounded-lg -mx-0.5 -my-1"></div>
+                            <div class="relative z-10 py-1 px-2">
+                                <h3 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent animate-slide-in">
+                                    🤖 AUTOMAÇÃO
+                                </h3>
+                                <p class="text-gray-300 text-sm md:text-base font-medium">
+                                    4 Serviços • IA & Automação Inteligente
+                                </p>
+                            </div>
+                        </div>
                     <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-6 justify-center mx-auto max-w-full sm:max-w-3xl px-0">
                         
                         <div class="service-node node glass glass-hover rounded-xl p-6 text-center group" data-service="chatbots-ia">
@@ -787,13 +848,25 @@
                         </div>
 
                     </div>
+
                 </div>
 
             </section>
 
             <!-- Navigation Links Section -->
             <section class="mt-20 mb-16">
-                <h3 class="text-2xl font-bold text-center mb-12 text-green-400">🔗 NAVEGAÇÃO PRINCIPAL</h3>
+                <div class="text-center mb-12 relative max-w-lg mx-auto">
+                    <!-- Fundo com transparência -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-green-900/95 via-teal-900/95 to-green-900/95 backdrop-blur-sm rounded-lg -mx-0.5 -my-1"></div>
+                    <div class="relative z-10 py-1 px-2">
+                        <h3 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-green-400 via-teal-400 to-green-500 bg-clip-text text-transparent">
+                            🔗 NAVEGAÇÃO PRINCIPAL
+                        </h3>
+                        <p class="text-gray-300 text-sm md:text-base font-medium">
+                            Acesso Rápido • Links & Portais Principais
+                        </p>
+                    </div>
+                </div>
                 <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-6 justify-center mx-auto max-w-full sm:max-w-4xl px-0">
                     
                     <div class="nav-node node glass glass-hover rounded-xl p-6 text-center group" data-page="home">
@@ -946,6 +1019,9 @@
     
     <!-- JavaScript Principal -->
     <script src="assets/js/app.js"></script>
+    
+    <!-- Animações Otimizadas -->
+    <script src="assets/js/optimized-animations.js"></script>
 
     <!-- JavaScript ES6+ Modules -->
     <script type="module" src="assets/js/main.js"></script>

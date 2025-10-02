@@ -1,0 +1,402 @@
+/* ANIMAÇÕES OTIMIZADAS PARA ALTA PERFORMANCE - RUANTECH V2.0 */
+
+/* ========================================
+   CONFIGURAÇÕES BASE DE PERFORMANCE
+======================================== */
+
+/* Otimizações globais para reduzir repaints e reflows */
+.performance-optimized {
+    will-change: transform, opacity;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Variáveis CSS para controle dinâmico das animações */
+:root {
+    --animation-speed: 1;
+    --hover-scale: 1.05;
+    --click-scale: 0.95;
+    --transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --fast-timing: cubic-bezier(0.23, 1, 0.32, 1);
+    --bounce-timing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========================================
+   MELHORIAS DOS SERVICE NODES
+======================================== */
+
+/* Service Node otimizado para scroll/swipe rápido */
+.service-node-optimized {
+    /* Propriedades de compositing para GPU */
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity, box-shadow;
+    
+    /* Transições mais rápidas e suaves */
+    transition: 
+        transform calc(0.2s / var(--animation-speed)) var(--fast-timing),
+        box-shadow calc(0.25s / var(--animation-speed)) var(--transition-timing),
+        border-color calc(0.15s / var(--animation-speed)) linear,
+        opacity calc(0.1s / var(--animation-speed)) linear;
+    
+    /* Evitar layout shifts */
+    contain: layout style;
+    
+    /* Touch-action otimizado */
+    touch-action: manipulation;
+    
+    /* Prevenção de seleção acidental */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Hover otimizado com debounce visual */
+.service-node-optimized:hover {
+    transform: translate3d(0, -8px, 0) scale(var(--hover-scale));
+    box-shadow: 
+        0 25px 50px rgba(124, 58, 237, 0.4),
+        0 0 0 1px rgba(124, 58, 237, 0.5);
+    border-color: var(--accent-primary);
+    
+    /* Forçar rasterização na GPU */
+    opacity: 0.999;
+}
+
+/* Estado ativo/click com feedback tátil */
+.service-node-optimized:active {
+    transform: translate3d(0, -4px, 0) scale(var(--click-scale));
+    transition-duration: calc(0.1s / var(--animation-speed));
+}
+
+/* ========================================
+   SISTEMA DE THROTTLING PARA GESTOS RÁPIDOS
+======================================== */
+
+/* Estados para controle de frequência de animação */
+.gesture-throttled {
+    transition-duration: 0.05s !important;
+    will-change: transform;
+}
+
+.gesture-active {
+    pointer-events: none; /* Evita múltiplos triggers */
+    transition: none !important; /* Remove transições durante gestos rápidos */
+}
+
+.gesture-cooldown {
+    transition-duration: calc(0.3s / var(--animation-speed));
+    transition-timing-function: var(--bounce-timing);
+}
+
+/* ========================================
+   ANIMAÇÕES COM CONTROLE DE FRAMERATE
+======================================== */
+
+/* Pulse otimizado com requestAnimationFrame */
+@keyframes smooth-pulse {
+    0%, 100% { 
+        transform: scale(1) translate3d(0, 0, 0);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: scale(1.02) translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+.smooth-pulse {
+    animation: smooth-pulse calc(2s * var(--animation-speed)) ease-in-out infinite;
+    animation-fill-mode: both;
+}
+
+/* Glow otimizado com contenção */
+@keyframes contained-glow {
+    0%, 100% { 
+        box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+        filter: brightness(1);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.6);
+        filter: brightness(1.1);
+    }
+}
+
+.contained-glow {
+    animation: contained-glow calc(3s * var(--animation-speed)) ease-in-out infinite;
+    contain: style;
+}
+
+/* ========================================
+   SISTEMA DE SCROLL/SWIPE INTELIGENTE
+======================================== */
+
+/* Container otimizado para scroll rápido */
+.scroll-optimized {
+    /* Scroll suave nativo */
+    scroll-behavior: smooth;
+    overflow-anchor: none;
+    
+    /* Otimizações de scroll */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Contenção para performance */
+    contain: layout style paint;
+}
+
+/* Items de scroll com snap points */
+.scroll-item {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+    
+    /* Evitar quebras durante scroll rápido */
+    position: relative;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Indicador de velocidade de scroll */
+.scroll-velocity-high .service-node-optimized {
+    transition-duration: 0.05s !important;
+    transform: translate3d(0, 0, 0) !important;
+}
+
+.scroll-velocity-medium .service-node-optimized {
+    transition-duration: calc(0.1s / var(--animation-speed)) !important;
+}
+
+/* ========================================
+   DEBOUNCE VISUAL PARA INTERAÇÕES RÁPIDAS
+======================================== */
+
+/* Sistema de debounce baseado em CSS */
+.interaction-debounce {
+    animation: debounce-reset 0.3s ease-out;
+}
+
+@keyframes debounce-reset {
+    0% { transform: scale(0.98); }
+    100% { transform: scale(1); }
+}
+
+/* Cooldown visual para evitar spam de cliques */
+.click-cooldown {
+    pointer-events: none;
+    opacity: 0.7;
+    animation: cooldown-timer calc(0.5s / var(--animation-speed)) linear;
+}
+
+@keyframes cooldown-timer {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; pointer-events: auto; }
+}
+
+/* ========================================
+   ADAPTAÇÕES PARA DISPOSITIVOS MÓVEIS
+======================================== */
+
+/* Otimizações específicas para touch */
+@media (hover: none) and (pointer: coarse) {
+    .service-node-optimized {
+        /* Transições mais rápidas em dispositivos touch */
+        transition-duration: calc(0.15s / var(--animation-speed));
+        
+        /* Área de toque maior */
+        padding: 1rem;
+        margin: 0.25rem;
+    }
+    
+    .service-node-optimized:hover {
+        /* Reduzir hover em touch devices */
+        transform: translate3d(0, -4px, 0) scale(1.02);
+    }
+    
+    /* Estados touch específicos */
+    .service-node-optimized:active {
+        transform: translate3d(0, -2px, 0) scale(0.98);
+        background-color: rgba(124, 58, 237, 0.1);
+    }
+}
+
+/* ========================================
+   SISTEMA DE REDUÇÃO AUTOMÁTICA DE QUALIDADE
+======================================== */
+
+/* Low-performance mode para FPS baixo */
+.low-performance .service-node-optimized {
+    transition: transform 0.1s linear !important;
+    will-change: auto;
+}
+
+.low-performance .smooth-pulse,
+.low-performance .contained-glow {
+    animation: none !important;
+}
+
+.low-performance .service-node-optimized:hover {
+    transform: translate3d(0, -2px, 0) scale(1.01);
+}
+
+/* Modo de alta performance */
+.high-performance .service-node-optimized {
+    transition-timing-function: linear;
+    transition-duration: calc(0.08s / var(--animation-speed));
+}
+
+/* ========================================
+   ANIMAÇÕES CONDICIONAIS BASEADAS EM MEDIA QUERIES
+======================================== */
+
+/* Respeitar preferências de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+    .service-node-optimized {
+        transition-duration: 0.01s !important;
+        animation: none !important;
+    }
+    
+    .service-node-optimized:hover {
+        transform: translate3d(0, -1px, 0) scale(1.01);
+    }
+    
+    .smooth-pulse,
+    .contained-glow {
+        animation: none !important;
+    }
+}
+
+/* Otimizações para telas pequenas */
+@media (max-width: 640px) {
+    .service-node-optimized {
+        transition-duration: calc(0.12s / var(--animation-speed));
+        --hover-scale: 1.03;
+    }
+}
+
+/* Otimizações para dispositivos com baixa capacidade de processamento */
+@media (max-device-width: 768px) and (orientation: portrait) {
+    :root {
+        --animation-speed: 1.5; /* Animações mais rápidas */
+        --hover-scale: 1.02;
+    }
+}
+
+/* ========================================
+   UTILITÁRIOS DE PERFORMANCE
+======================================== */
+
+/* Forçar compositing layer */
+.force-gpu {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+}
+
+/* Evitar reflows */
+.avoid-reflow {
+    contain: layout;
+    position: relative;
+}
+
+/* Otimização de renderização */
+.render-optimized {
+    contain: style layout paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 200px 150px;
+}
+
+/* ========================================
+   SISTEMA DE FEEDBACK VISUAL PROGRESSIVO
+======================================== */
+
+/* Estados progressivos de carregamento */
+.loading-shimmer {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(124, 58, 237, 0.1) 20%,
+        rgba(124, 58, 237, 0.2) 60%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer calc(1.5s / var(--animation-speed)) linear infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Indicadores de estado de interação */
+.interaction-ready {
+    cursor: pointer;
+    outline: 2px solid transparent;
+    transition: outline-color calc(0.2s / var(--animation-speed)) ease;
+}
+
+.interaction-ready:focus-visible {
+    outline-color: var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   SISTEMA DE THROTTLING INTELIGENTE
+======================================== */
+
+/* Classes aplicadas dinamicamente via JavaScript */
+.velocity-throttle-1 { transition-duration: 0.2s !important; }
+.velocity-throttle-2 { transition-duration: 0.1s !important; }
+.velocity-throttle-3 { transition-duration: 0.05s !important; }
+.velocity-throttle-4 { 
+    transition: none !important; 
+    animation: none !important;
+}
+
+/* Reset após throttling */
+.velocity-reset {
+    transition: all calc(0.3s / var(--animation-speed)) var(--bounce-timing) !important;
+}
+
+/* ========================================
+   DEBUGGING E MONITORAMENTO
+======================================== */
+
+/* Indicadores visuais para debugging (remover em produção) */
+.debug-performance {
+    position: relative;
+}
+
+.debug-performance::after {
+    content: "🚀";
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 10px;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.debug-performance.low-fps::after {
+    content: "🐌";
+    color: red;
+}
+
+/* ========================================
+   SISTEMA DE FALLBACK PARA NAVEGADORES ANTIGOS
+======================================== */
+
+/* Fallback para navegadores sem suporte a will-change */
+@supports not (will-change: transform) {
+    .service-node-optimized {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        -webkit-transition: -webkit-transform 0.2s ease;
+        transition: transform 0.2s ease;
+    }
+}
+
+/* Fallback para navegadores sem suporte a contain */
+@supports not (contain: layout) {
+    .render-optimized {
+        overflow: hidden;
+        position: relative;
+    }
+}
