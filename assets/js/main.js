@@ -87,6 +87,23 @@ class RuantechApp {
         window.addEventListener('resize', () => {
             this.network.resize();
         });
+
+        // Pausar animações durante o scroll
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            if (this.particles && typeof this.particles.pause === 'function') {
+                this.particles.pause();
+            }
+            if (this.search && typeof this.search.hideTooltip === 'function') {
+                this.search.hideTooltip();
+            }
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (this.particles && typeof this.particles.resume === 'function') {
+                    this.particles.resume();
+                }
+            }, 300);
+        });
     }
 
     handleServiceClick(e) {
@@ -1231,7 +1248,7 @@ class SearchSystem {
         this.input.focus();
 
         this.input.addEventListener('input', (e) => this.search(e.target.value));
-        document.getElementById('close-search').addEventListener('click', () => this.hide());
+        document.getElementById('close-search')?.addEventListener('click', () => this.hide());
     }
 
     hide() {

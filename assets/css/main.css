@@ -39,6 +39,13 @@
     --glow-color: rgba(0, 255, 0, 0.6);
     --border-glass: rgba(0, 255, 0, 0.2);
 }
+/* Otimização: Remover blur dos fundos dos títulos em mobile */
+@media (max-width: 639px) {
+    .service-category > .text-center > .absolute {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
 
 /* Glassmorphism Effects */
 .glass {
@@ -49,7 +56,8 @@
 }
 
 .glass-hover {
-    transition: all 0.3s ease;
+    will-change: transform;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .glass-hover:hover {
@@ -61,12 +69,13 @@
 
 /* Service Nodes */
 .service-node {
+    will-change: transform;
     background: #111827 !important;
     border: 1px solid rgba(124, 58, 237, 0.3);
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
 }
 
@@ -103,9 +112,10 @@
 
 /* Service Icons */
 .service-icon {
+    will-change: transform;
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: white;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .service-node:hover .service-icon {
