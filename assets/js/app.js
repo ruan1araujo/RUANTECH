@@ -520,23 +520,26 @@ class SequentialAnimator {
                 }
             });
         }, {
-            threshold: 0.2,
-            rootMargin: '50px'
+            threshold: 0.01,
+            rootMargin: '150px'
         });
     }
 
     animateCategory(category) {
-        // Animar título da categoria
-        category.classList.add('category-visible');
-
+        // Garantir que a categoria e os títulos estejam sempre visíveis
+        category.style.opacity = '1';
+        category.style.transform = 'none';
         const title = category.querySelector('h3');
         if (title) {
-            title.classList.add('category-title');
+            title.style.opacity = '1';
+            title.style.transform = 'none';
         }
-
-        // Animar cards sequencialmente
+        // Garantir que todos os cards estejam visíveis imediatamente
         const cards = category.querySelectorAll('.service-node');
-        this.animateCardsSequentially(cards);
+        cards.forEach(card => {
+            card.style.opacity = '1';
+            card.style.transform = 'none';
+        });
     }
 
     animateCardsSequentially(cards) {
