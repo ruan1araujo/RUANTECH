@@ -375,32 +375,57 @@ header nav {
     50% { transform: translateY(-20px) rotate(180deg); }
 }
 
-/* Connection Lines */
+/* Connection Lines - Versão Otimizada */
 .connection-line {
     stroke: var(--accent-primary);
     stroke-width: 2;
     fill: none;
     opacity: 0.6;
-    stroke-dasharray: 10 5;
-    animation: data-flow 3s linear infinite, pulse-connection 4s ease-in-out infinite;
+    transition: stroke-width 0.3s ease, opacity 0.3s ease;
+    will-change: stroke-width, opacity;
 }
 
 .connection-line.active {
-    stroke-width: 3;
+    stroke-width: 4;
     opacity: 1;
-    stroke-dasharray: 15 8;
-    animation: data-flow-fast 1.5s linear infinite, glow-connection 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px var(--accent-primary));
+    animation: optimized-pulse 2s ease-in-out;
 }
 
-/* Animação de dados correndo nas linhas */
-@keyframes data-flow {
-    0% { stroke-dashoffset: 200; }
-    100% { stroke-dashoffset: 0; }
+/* Animação otimizada de pulso */
+@keyframes optimized-pulse {
+    0% { 
+        stroke-width: 2;
+        opacity: 0.6;
+    }
+    50% { 
+        stroke-width: 4;
+        opacity: 1;
+    }
+    100% { 
+        stroke-width: 2;
+        opacity: 0.6;
+    }
 }
 
-@keyframes data-flow-fast {
-    0% { stroke-dashoffset: 150; }
-    100% { stroke-dashoffset: 0; }
+/* Animação de dados correndo - mais suave */
+.connection-line.flowing {
+    stroke-dasharray: 20 10;
+    animation: smooth-data-flow 2.5s linear;
+}
+
+@keyframes smooth-data-flow {
+    0% {
+        stroke-dashoffset: 1000;
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0.6;
+    }
 }
 
 @keyframes pulse-connection {
@@ -757,5 +782,48 @@ header nav {
     * {
         animation: none !important;
         transition: none !important;
+    }
+}
+
+/* === OTIMIZAÇÕES DE PERFORMANCE PARA CONEXÕES === */
+
+/* Otimizações Mobile */
+@media (max-width: 768px) {
+    .connection-line {
+        will-change: opacity;
+        stroke-width: 1.5;
+    }
+    
+    .connection-line.active {
+        stroke-width: 2.5;
+        animation: mobile-pulse 1.5s ease-in-out;
+        filter: none; /* Remove drop-shadow para performance */
+    }
+    
+    @keyframes mobile-pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+}
+
+/* Reduzir animações para usuários que preferem menos movimento */
+@media (prefers-reduced-motion: reduce) {
+    .connection-line,
+    .connection-line.active,
+    .connection-line.flowing {
+        animation: none !important;
+        transition: opacity 0.3s ease;
+    }
+}
+
+/* Otimizações para telas muito pequenas */
+@media (max-width: 480px) {
+    .connection-line {
+        stroke-width: 1;
+    }
+    
+    .connection-line.active {
+        stroke-width: 2;
+        filter: none;
     }
 }

@@ -1,16 +1,15 @@
-// Sistema Simples de Fluxo de Partículas
-class SimpleParticleFlow {
+// Sistema de Fibra Óptica - Dados correndo exatamente nas linhas SVG
+class FiberOpticDataFlow {
     constructor() {
         this.isActive = true;
-        this.container = null;
-        this.particles = [];
+        this.lightPulses = [];
+        this.particleContainer = null;
 
-        console.log('🚀 Iniciando Sistema de Partículas Simples...');
+        console.log('💡 Iniciando Sistema de Fibra Óptica...');
         this.init();
     }
 
     init() {
-        // Aguardar carregamento da página
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => this.setup(), 2000);
@@ -21,147 +20,225 @@ class SimpleParticleFlow {
     }
 
     setup() {
-        console.log('🔧 Configurando sistema de partículas...');
+        console.log('🔧 Configurando sistema de fibra óptica...');
 
-        // Criar container
-        this.createContainer();
+        // Criar container para as partículas de luz
+        this.createParticleContainer();
 
-        // Verificar elementos
-        const hub = document.getElementById('central-hub');
-        if (!hub) {
-            console.error('❌ Hub central não encontrado');
-            return;
-        }
-
-        console.log('✅ Hub encontrado, iniciando fluxo...');
-
-        // Iniciar fluxo
-        this.startFlow();
+        // Aguardar conexões estarem prontas
+        this.waitForConnections();
     }
 
-    createContainer() {
-        this.container = document.createElement('div');
-        this.container.id = 'simple-particle-container';
-        this.container.style.cssText = `
-            position: fixed;
+    createParticleContainer() {
+        this.particleContainer = document.createElement('div');
+        this.particleContainer.id = 'fiber-optic-container';
+        this.particleContainer.style.cssText = `
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: 30;
+            z-index: 15;
         `;
 
-        document.body.appendChild(this.container);
-        console.log('✅ Container criado');
+        // Adicionar ao mesmo container das linhas SVG
+        const svgContainer = document.getElementById('connection-lines');
+        if (svgContainer && svgContainer.parentElement) {
+            svgContainer.parentElement.appendChild(this.particleContainer);
+            console.log('✅ Container de fibra óptica criado');
+        }
     }
 
-    startFlow() {
-        // Criar primeira partícula imediatamente
-        this.createParticle();
+    waitForConnections() {
+        const checkConnections = () => {
+            const connections = document.querySelectorAll('.connection-line');
+            if (connections.length > 0) {
+                console.log(`✅ ${connections.length} linhas de fibra encontradas`);
+                this.startFiberOpticFlow();
+            } else {
+                setTimeout(checkConnections, 500);
+            }
+        };
 
-        // Criar partículas a cada 2 segundos
+        checkConnections();
+    }
+
+    startFiberOpticFlow() {
+        // Criar primeira sequência de pulsos luminosos
+        this.createLightSequence();
+
+        // Pulsos periódicos individuais
         setInterval(() => {
             if (this.isActive) {
-                this.createParticle();
+                this.createRandomLightPulse();
             }
-        }, 2000);
+        }, 3000);
+
+        // Sequências completas ocasionais
+        setInterval(() => {
+            if (this.isActive) {
+                this.createLightSequence();
+            }
+        }, 12000);
     }
 
-    createParticle() {
-        const hub = document.getElementById('central-hub');
-        if (!hub || !this.container) return;
+    createLightSequence() {
+        const connections = document.querySelectorAll('.connection-line');
+        if (connections.length === 0) return;
 
-        // Pegar posição do hub
-        const hubRect = hub.getBoundingClientRect();
-        const hubCenter = {
-            x: hubRect.left + hubRect.width / 2,
-            y: hubRect.top + hubRect.height / 2
-        };
+        console.log('💫 Criando sequência de pulsos luminosos...');
 
-        // Escolher um destino aleatório na tela
-        const target = {
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight
-        };
+        // Selecionar 3-4 conexões aleatórias
+        const selectedConnections = Array.from(connections)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, Math.min(4, connections.length));
 
-        // Criar partícula
-        const particle = document.createElement('div');
-        particle.className = 'simple-particle';
-        particle.style.cssText = `
-            position: fixed;
-            left: ${hubCenter.x}px;
-            top: ${hubCenter.y}px;
-            width: 8px;
-            height: 8px;
-            background: linear-gradient(45deg, #00ffff, #0080ff);
-            border-radius: 50%;
-            box-shadow: 0 0 10px #00ffff, 0 0 20px #0080ff;
-            transform: translate(-50%, -50%);
-            z-index: 35;
-        `;
-
-        this.container.appendChild(particle);
-        this.particles.push(particle);
-
-        console.log(`✨ Partícula criada em (${hubCenter.x}, ${hubCenter.y})`);
-
-        // Animar
-        this.animateParticle(particle, hubCenter, target);
+        selectedConnections.forEach((connection, index) => {
+            setTimeout(() => {
+                this.createLightPulseOnPath(connection);
+            }, index * 400);
+        });
     }
 
-    animateParticle(particle, start, end) {
-        const duration = 3000;
+    createRandomLightPulse() {
+        const connections = document.querySelectorAll('.connection-line');
+        if (connections.length === 0) return;
+
+        const randomConnection = connections[Math.floor(Math.random() * connections.length)];
+        this.createLightPulseOnPath(randomConnection);
+    }
+
+    createLightPulseOnPath(pathElement) {
+        if (!pathElement || !this.particleContainer) return;
+
+        try {
+            // Verificar se o elemento tem getTotalLength (é um path/line SVG)
+            let pathLength = 0;
+            if (pathElement.getTotalLength) {
+                pathLength = pathElement.getTotalLength();
+            } else if (pathElement.tagName === 'line') {
+                // Para elementos line, calcular distância
+                const x1 = parseFloat(pathElement.getAttribute('x1')) || 0;
+                const y1 = parseFloat(pathElement.getAttribute('y1')) || 0;
+                const x2 = parseFloat(pathElement.getAttribute('x2')) || 0;
+                const y2 = parseFloat(pathElement.getAttribute('y2')) || 0;
+                pathLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            }
+
+            if (pathLength === 0) return;
+
+            // Criar partícula de luz
+            const lightPulse = document.createElement('div');
+            lightPulse.className = 'fiber-optic-pulse';
+
+            // Estilo da partícula de luz - pequena e brilhante
+            lightPulse.style.cssText = `
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: radial-gradient(circle, #00ffff 0%, #0080ff 60%, transparent 100%);
+                border-radius: 50%;
+                box-shadow: 
+                    0 0 6px #00ffff,
+                    0 0 12px #0080ff,
+                    0 0 18px #00ffff;
+                z-index: 20;
+                pointer-events: none;
+            `;
+
+            this.particleContainer.appendChild(lightPulse);
+            this.lightPulses.push(lightPulse);
+
+            console.log('💡 Pulso de luz criado na fibra');
+
+            // Animar ao longo do caminho SVG
+            this.animateLightAlongPath(lightPulse, pathElement, pathLength);
+
+        } catch (error) {
+            console.warn('❌ Erro ao criar pulso de luz:', error);
+        }
+    }
+
+    animateLightAlongPath(lightPulse, pathElement, pathLength) {
+        const duration = 2000 + Math.random() * 1000; // 2-3 segundos
         const startTime = performance.now();
 
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
-            // Easing
-            const easeProgress = 1 - Math.pow(1 - progress, 2);
+            try {
+                let point = { x: 0, y: 0 };
 
-            // Posição
-            const x = start.x + (end.x - start.x) * easeProgress;
-            const y = start.y + (end.y - start.y) * easeProgress;
+                // Obter ponto atual no caminho SVG
+                if (pathElement.getPointAtLength) {
+                    point = pathElement.getPointAtLength(progress * pathLength);
+                } else if (pathElement.tagName === 'line') {
+                    // Para elementos line, interpolar posição
+                    const x1 = parseFloat(pathElement.getAttribute('x1')) || 0;
+                    const y1 = parseFloat(pathElement.getAttribute('y1')) || 0;
+                    const x2 = parseFloat(pathElement.getAttribute('x2')) || 0;
+                    const y2 = parseFloat(pathElement.getAttribute('y2')) || 0;
 
-            particle.style.left = `${x}px`;
-            particle.style.top = `${y}px`;
+                    point.x = x1 + (x2 - x1) * progress;
+                    point.y = y1 + (y2 - y1) * progress;
+                }
 
-            // Opacidade
-            if (progress > 0.7) {
-                particle.style.opacity = (1 - progress) * 3.33;
-            }
+                // Posicionar a partícula EXATAMENTE no caminho
+                lightPulse.style.left = `${point.x}px`;
+                lightPulse.style.top = `${point.y}px`;
+                lightPulse.style.transform = 'translate(-50%, -50%)';
 
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                this.removeParticle(particle);
+                // Controlar opacidade suavemente
+                if (progress < 0.1) {
+                    lightPulse.style.opacity = progress * 10;
+                } else if (progress > 0.9) {
+                    lightPulse.style.opacity = (1 - progress) * 10;
+                } else {
+                    lightPulse.style.opacity = 1;
+                }
+
+                // Variar intensidade do brilho para simular fibra óptica
+                const glowIntensity = 0.8 + Math.sin(progress * Math.PI * 6) * 0.2;
+                lightPulse.style.filter = `brightness(${glowIntensity}) saturate(1.2)`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    this.removeLightPulse(lightPulse);
+                }
+
+            } catch (error) {
+                console.warn('❌ Erro na animação do pulso:', error);
+                this.removeLightPulse(lightPulse);
             }
         };
 
         requestAnimationFrame(animate);
     }
 
-    removeParticle(particle) {
-        if (particle.parentNode) {
-            particle.parentNode.removeChild(particle);
+    removeLightPulse(lightPulse) {
+        if (lightPulse.parentNode) {
+            lightPulse.parentNode.removeChild(lightPulse);
         }
 
-        const index = this.particles.indexOf(particle);
+        const index = this.lightPulses.indexOf(lightPulse);
         if (index > -1) {
-            this.particles.splice(index, 1);
+            this.lightPulses.splice(index, 1);
         }
     }
 
     pause() {
         this.isActive = false;
+        console.log('⏸️ Sistema de fibra óptica pausado');
     }
 
     resume() {
         this.isActive = true;
+        console.log('▶️ Sistema de fibra óptica retomado');
     }
 }
 
-// Inicializar automaticamente
-window.simpleParticleFlow = new SimpleParticleFlow();
+// Inicializar sistema de fibra óptica
+window.fiberOpticDataFlow = new FiberOpticDataFlow();
