@@ -465,163 +465,26 @@ header nav {
     }
 }
 
-/* Partículas de dados nas linhas */
+/* Partículas de dados nas linhas - Simplificadas */
 .data-particle {
     position: absolute;
-    width: 12px;
-    height: 12px;
-    background: linear-gradient(45deg, #00ff88, #00ccff);
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(0, 204, 255, 1) 0%, rgba(0, 204, 255, 0.6) 70%, transparent 100%);
     border-radius: 50%;
-    box-shadow: 
-        0 0 15px currentColor, 
-        0 0 30px rgba(0, 255, 136, 0.8),
-        0 0 45px rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 8px rgba(0, 204, 255, 0.8);
     pointer-events: none;
     z-index: 15;
-    transition: all 0.1s ease-out;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-}
-
-.data-particle.fast {
-    background: linear-gradient(45deg, #ffaa00, #ff6600);
-    box-shadow: 
-        0 0 20px currentColor, 
-        0 0 40px rgba(255, 170, 0, 0.8),
-        0 0 60px rgba(255, 170, 0, 0.4);
-    width: 15px;
-    height: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.9);
+    will-change: transform, opacity;
 }
 
 .data-particle.from-hub {
-    background: linear-gradient(45deg, #7c3aed, #3b82f6);
-    box-shadow: 
-        0 0 25px #7c3aed, 
-        0 0 50px rgba(124, 58, 237, 0.8),
-        0 0 75px rgba(124, 58, 237, 0.4);
-    animation: hub-pulse 0.3s ease-out;
-    width: 14px;
-    height: 14px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 1) 0%, rgba(124, 58, 237, 0.6) 70%, transparent 100%);
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.9);
+    width: 8px;
+    height: 8px;
 }
 
-.data-particle.from-hub.fast {
-    background: linear-gradient(45deg, #f59e0b, #ef4444);
-    box-shadow: 
-        0 0 30px #f59e0b, 
-        0 0 60px rgba(245, 158, 11, 0.8),
-        0 0 90px rgba(245, 158, 11, 0.4);
-    animation: hub-pulse-fast 0.2s ease-out;
-    width: 18px;
-    height: 18px;
-}
-
-.data-particle::before {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-}
-
-.data-particle::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.4;
-        animation: particle-ring 1.5s ease-out infinite;
-}
-
-@keyframes hub-pulse {
-    0% { 
-        transform: scale(0.5);
-        opacity: 0;
-    }
-    50% { 
-        transform: scale(1.5);
-        opacity: 1;
-    }
-    100% { 
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes hub-pulse-fast {
-    0% { 
-        transform: scale(0.3);
-        opacity: 0;
-    }
-    50% { 
-        transform: scale(2);
-        opacity: 1;
-    }
-    100% { 
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes particle-ring {
-    0% { 
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.3;
-    }
-    100% { 
-        transform: translate(-50%, -50%) scale(2.5);
-        opacity: 0;
-    }
-}@keyframes particle-flow {
-    0% { 
-        opacity: 0;
-        transform: translateX(0) scale(0.5);
-    }
-    10% { 
-        opacity: 1;
-        transform: translateX(10px) scale(1);
-    }
-    90% { 
-        opacity: 1;
-        transform: translateX(calc(100% - 10px)) scale(1);
-    }
-    100% { 
-        opacity: 0;
-        transform: translateX(100%) scale(0.5);
-    }
-}
-
-@keyframes particle-flow-fast {
-    0% { 
-        opacity: 0;
-        transform: translateX(0) scale(0.3);
-        filter: brightness(1);
-    }
-    15% { 
-        opacity: 1;
-        transform: translateX(15px) scale(1.2);
-        filter: brightness(1.5);
-    }
-    85% { 
-        opacity: 1;
-        transform: translateX(calc(100% - 15px)) scale(1.2);
-        filter: brightness(1.5);
-    }
-    100% { 
-        opacity: 0;
-        transform: translateX(100%) scale(0.3);
-        filter: brightness(1);
-    }
-}
 
 /* Efeitos especiais para conexões ativas */
 .connection-line.active {

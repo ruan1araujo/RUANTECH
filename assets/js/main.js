@@ -1673,11 +1673,8 @@ class DataFlowAnimator {
     init() {
         // Aguardar um pouco para garantir que os elementos estejam carregados
         setTimeout(() => {
-            console.log('🔄 Iniciando DataFlowAnimator...');
             this.setupConnectionLines();
             this.startDataFlow();
-            console.log('🔄 Sistema de fluxo de dados inicializado');
-            console.log(`📊 Linhas criadas: ${this.connectionLines.length}`);
         }, 2000);
     }
 
@@ -1685,7 +1682,6 @@ class DataFlowAnimator {
         // Encontrar todas as linhas de conexão SVG
         const svgContainer = document.getElementById('connection-lines');
         if (!svgContainer) {
-            console.warn('❌ Container SVG não encontrado');
             return;
         }
 
@@ -1743,18 +1739,14 @@ class DataFlowAnimator {
     createDataParticles() {
         const svg = document.getElementById('connection-lines');
         if (!svg) {
-            console.warn('❌ SVG connection-lines não encontrado');
             return;
         }
 
         // Obter referências dos elementos
         const hub = document.getElementById('central-hub');
         if (!hub) {
-            console.warn('❌ Hub central não encontrado');
             return;
         }
-
-        console.log('✅ Elementos encontrados, criando partículas...');
 
         // Criar container para as partículas
         let particleContainer = document.querySelector('.particle-container');
@@ -1786,7 +1778,6 @@ class DataFlowAnimator {
         this.services.forEach((service, index) => {
             const serviceElement = document.querySelector(service.selector);
             if (!serviceElement) {
-                console.warn(`❌ Serviço não encontrado: ${service.selector}`);
                 return;
             }
 
@@ -1796,15 +1787,13 @@ class DataFlowAnimator {
                 y: serviceRect.top - svgRect.top + serviceRect.height / 2
             };
 
-            console.log(`✅ Serviço ${service.name} encontrado em:`, serviceCenter);
-
-            // Criar e animar partícula com delay
+            // Criar e animar partícula com delay maior
             setTimeout(() => {
                 this.animateParticleFromHubToService(particleContainer, hubCenter, serviceCenter, service.name);
-            }, index * 600);
+            }, index * 900); // Aumentado de 600 para 900ms
         });
 
-        // Criar ciclo contínuo de partículas
+        // Criar ciclo contínuo de partículas - menos frequente
         setInterval(() => {
             if (this.isActive) {
                 const randomService = this.services[Math.floor(Math.random() * this.services.length)];
@@ -1818,15 +1807,12 @@ class DataFlowAnimator {
                     };
 
                     this.animateParticleFromHubToService(particleContainer, hubCenter, serviceCenter, randomService.name);
-                    console.log(`🌟 Partícula criada para ${randomService.name}`);
                 }
             }
-        }, 2000);
+        }, 3500); // Aumentado de 2000 para 3500ms para menos poluição visual
     }
 
     animateParticleFromHubToService(container, hubCenter, serviceCenter, serviceName) {
-        console.log(`🎯 Criando partícula: ${serviceName} de (${hubCenter.x}, ${hubCenter.y}) para (${serviceCenter.x}, ${serviceCenter.y})`);
-
         const particle = document.createElement('div');
         particle.className = 'data-particle from-hub';
 
@@ -1839,33 +1825,34 @@ class DataFlowAnimator {
         `;
 
         container.appendChild(particle);
-        console.log('✅ Partícula adicionada ao container');        // Animar para o serviço
-        const duration = 2000;
+
+        // Animar para o serviço - duração mais longa e suave
+        const duration = 2500;
         const startTime = performance.now();
 
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
-            // Easing suave
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            // Easing suave e elegante (ease-out cubic)
+            const easeProgress = 1 - Math.pow(1 - progress, 2.5);
 
             // Calcular posição atual
             const currentX = hubCenter.x + (serviceCenter.x - hubCenter.x) * easeProgress;
             const currentY = hubCenter.y + (serviceCenter.y - hubCenter.y) * easeProgress;
 
-            // Adicionar curva
-            const curve = Math.sin(progress * Math.PI) * 20;
+            // Curva sutil e elegante
+            const curve = Math.sin(progress * Math.PI) * 15;
             const finalY = currentY - curve;
 
             particle.style.left = `${currentX}px`;
             particle.style.top = `${finalY}px`;
 
-            // Controlar opacidade
-            if (progress < 0.1) {
-                particle.style.opacity = progress * 10;
-            } else if (progress > 0.9) {
-                particle.style.opacity = (1 - progress) * 10;
+            // Controlar opacidade com fade suave
+            if (progress < 0.15) {
+                particle.style.opacity = progress / 0.15;
+            } else if (progress > 0.85) {
+                particle.style.opacity = (1 - progress) / 0.15;
             } else {
                 particle.style.opacity = 1;
             }
@@ -1874,11 +1861,9 @@ class DataFlowAnimator {
                 requestAnimationFrame(animate);
             } else {
                 // Remover partícula
-                setTimeout(() => {
-                    if (particle.parentNode) {
-                        particle.parentNode.removeChild(particle);
-                    }
-                }, 100);
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
             }
         };
 
