@@ -88,7 +88,11 @@ class RuantechApp {
             this.network.resize();
         });
 
-        // Controle de linhas durante scroll - OTIMIZADO
+        // Detecção de dispositivo móvel
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         window.innerWidth <= 768;
+        
+        // Controle de linhas durante scroll - OTIMIZADO PARA MOBILE
         let scrollTimeout;
         let isScrolling = false;
 
@@ -103,9 +107,12 @@ class RuantechApp {
                 'svg path'
             ];
 
+            // Mobile: ocultar instantaneamente sem transição
+            const transition = isMobile ? 'none' : 'opacity 0.2s ease';
+
             selectors.forEach(selector => {
                 document.querySelectorAll(selector).forEach(line => {
-                    line.style.transition = 'opacity 0.2s ease';
+                    line.style.transition = transition;
                     line.style.opacity = '0';
                 });
             });
@@ -113,7 +120,7 @@ class RuantechApp {
             // Ocultar SVG inteiro como backup
             const svg = document.getElementById('connection-lines');
             if (svg) {
-                svg.style.transition = 'opacity 0.2s ease';
+                svg.style.transition = transition;
                 svg.style.opacity = '0';
             }
 
@@ -129,19 +136,21 @@ class RuantechApp {
         };
 
         const showConnectionLines = () => {
-            // Aguardar um pouco para garantir que o scroll parou
+            // Mobile: delay menor e sem efeitos complexos
+            const delay = isMobile ? 50 : 100;
+            
             setTimeout(() => {
                 // Mostrar SVG primeiro
                 const svg = document.getElementById('connection-lines');
                 if (svg) {
-                    svg.style.transition = 'opacity 0.3s ease';
+                    svg.style.transition = isMobile ? 'opacity 0.2s ease' : 'opacity 0.3s ease';
                     svg.style.opacity = '1';
                 }
 
-                // Buscar e mostrar linhas com efeito cascata
+                // Buscar e mostrar linhas
                 const selectors = [
                     '.connection-line',
-                    '#connection-lines line',
+                    '#connection-lines line', 
                     '#connection-lines path',
                     '.network-connection',
                     'svg line',
@@ -157,38 +166,57 @@ class RuantechApp {
                 // Remover duplicatas
                 allLines = [...new Set(allLines)];
 
-                console.log(`🔗 Reconectando ${allLines.length} linhas...`);
+                console.log(`🔗 Reconectando ${allLines.length} linhas (Mobile: ${isMobile})...`);
 
-                allLines.forEach((line, idx) => {
+                if (isMobile) {
+                    // Mobile: mostrar todas as linhas ao mesmo tempo sem cascata
+                    allLines.forEach(line => {
+                        line.style.transition = 'opacity 0.3s ease';
+                        line.style.opacity = '0.6';
+                    });
+                    
+                    // Retomar partículas mais rápido no mobile
                     setTimeout(() => {
-                        line.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-                        line.style.opacity = '0.7';
-
-                        // Efeito de pulso na reconexão
-                        setTimeout(() => {
-                            line.style.opacity = '1';
-                            setTimeout(() => {
-                                line.style.opacity = '0.7';
-                                line.style.transition = '';
-                            }, 200);
-                        }, 300);
-                    }, idx * 50); // Efeito cascata mais visível
-                });
-
-                // RETOMAR PARTÍCULAS - só após linhas estarem visíveis
-                setTimeout(() => {
-                    if (window.fiberOpticDataFlow) {
-                        // Tornar container visível primeiro
-                        if (window.fiberOpticDataFlow.particleContainer) {
-                            window.fiberOpticDataFlow.particleContainer.style.visibility = 'visible';
-                            window.fiberOpticDataFlow.particleContainer.style.opacity = '1';
+                        if (window.fiberOpticDataFlow) {
+                            if (window.fiberOpticDataFlow.particleContainer) {
+                                window.fiberOpticDataFlow.particleContainer.style.visibility = 'visible';
+                                window.fiberOpticDataFlow.particleContainer.style.opacity = '0.8'; // Menos opacidade no mobile
+                            }
+                            window.fiberOpticDataFlow.resume();
+                            console.log('💫 Partículas retomadas (Mobile otimizado)');
                         }
-                        // Retomar sistema de partículas
-                        window.fiberOpticDataFlow.resume();
-                        console.log('💫 Partículas retomadas após linhas reconectarem');
-                    }
-                }, allLines.length * 50 + 500); // Aguardar cascata das linhas + delay extra
-            }, 100);
+                    }, 200);
+                } else {
+                    // Desktop: efeito cascata normal
+                    allLines.forEach((line, idx) => {
+                        setTimeout(() => {
+                            line.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                            line.style.opacity = '0.7';
+
+                            // Efeito de pulso na reconexão (só desktop)
+                            setTimeout(() => {
+                                line.style.opacity = '1';
+                                setTimeout(() => {
+                                    line.style.opacity = '0.7';
+                                    line.style.transition = '';
+                                }, 200);
+                            }, 300);
+                        }, idx * 30); // Cascata mais rápida
+                    });
+
+                    // RETOMAR PARTÍCULAS - só após linhas estarem visíveis (Desktop)
+                    setTimeout(() => {
+                        if (window.fiberOpticDataFlow) {
+                            if (window.fiberOpticDataFlow.particleContainer) {
+                                window.fiberOpticDataFlow.particleContainer.style.visibility = 'visible';
+                                window.fiberOpticDataFlow.particleContainer.style.opacity = '1';
+                            }
+                            window.fiberOpticDataFlow.resume();
+                            console.log('💫 Partículas retomadas após linhas reconectarem');
+                        }
+                    }, allLines.length * 30 + 300);
+                }
+            }, delay);
         };
 
         window.addEventListener('scroll', () => {
@@ -207,6 +235,10 @@ class RuantechApp {
             }
 
             clearTimeout(scrollTimeout);
+            
+            // Mobile: timeout menor para resposta mais rápida
+            const scrollStopDelay = isMobile ? 150 : 300;
+            
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
 
@@ -217,7 +249,7 @@ class RuantechApp {
                 if (this.network && this.network.resumeAnimations) {
                     this.network.resumeAnimations();
                 }
-            }, 300); // Tempo para detectar parada do scroll
+            }, scrollStopDelay);
         }, { passive: true });
     }
 

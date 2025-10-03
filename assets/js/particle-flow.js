@@ -8,8 +8,12 @@ class FiberOpticDataFlow {
         this.animationFrames = []; // Para cancelar animações durante scroll
         this.pulseInterval = null; // Para controlar intervalos
         this.sequenceInterval = null; // Para controlar intervalos
+        
+        // Detecção de mobile para otimização
+        this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         window.innerWidth <= 768;
 
-        console.log('💡 Iniciando Sistema de Fibra Óptica...');
+        console.log(`💡 Iniciando Sistema de Fibra Óptica (Mobile: ${this.isMobile})...`);
         this.init();
     }
 
@@ -72,19 +76,23 @@ class FiberOpticDataFlow {
         // Criar primeira sequência de pulsos luminosos
         this.createLightSequence();
 
+        // Mobile: intervalos maiores para melhor performance
+        const pulseInterval = this.isMobile ? 4000 : 3000;
+        const sequenceInterval = this.isMobile ? 15000 : 12000;
+
         // Pulsos periódicos individuais - armazenar para controle
         this.pulseInterval = setInterval(() => {
             if (this.isActive && !this.isPaused) {
                 this.createRandomLightPulse();
             }
-        }, 3000);
+        }, pulseInterval);
 
         // Sequências completas ocasionais - armazenar para controle
         this.sequenceInterval = setInterval(() => {
             if (this.isActive && !this.isPaused) {
                 this.createLightSequence();
             }
-        }, 12000);
+        }, sequenceInterval);
     }
 
     createLightSequence() {
@@ -93,15 +101,21 @@ class FiberOpticDataFlow {
 
         console.log('💫 Criando sequência de pulsos luminosos...');
 
-        // Selecionar 3-4 conexões aleatórias
+        // Mobile: menos conexões simultâneas
+        const maxConnections = this.isMobile ? 2 : 4;
+        
+        // Selecionar conexões aleatórias
         const selectedConnections = Array.from(connections)
             .sort(() => Math.random() - 0.5)
-            .slice(0, Math.min(4, connections.length));
+            .slice(0, Math.min(maxConnections, connections.length));
+
+        // Mobile: delay maior entre partículas
+        const delay = this.isMobile ? 600 : 400;
 
         selectedConnections.forEach((connection, index) => {
             setTimeout(() => {
                 this.createLightPulseOnPath(connection);
-            }, index * 400);
+            }, index * delay);
         });
     }
 
@@ -116,8 +130,8 @@ class FiberOpticDataFlow {
     createLightPulseOnPath(pathElement) {
         if (!pathElement || !this.particleContainer) return;
 
-        // Limitar quantidade de partículas simultâneas para evitar travamentos
-        const MAX_PARTICLES = 12;
+        // Mobile: limite menor de partículas simultâneas
+        const MAX_PARTICLES = this.isMobile ? 8 : 12;
         if (this.lightPulses.length >= MAX_PARTICLES) return;
 
         try {
@@ -136,12 +150,23 @@ class FiberOpticDataFlow {
 
             if (pathLength === 0) return;
 
-            // Alternar entre partículas pequenas e grandes
-            const isLarge = Math.random() < 0.4; // 40% chance de ser grande
-            const size = isLarge ? (12 + Math.random() * 12) : 4;
-            const shadow = isLarge
-                ? '0 0 16px #00ffff, 0 0 32px #0080ff, 0 0 48px #00ffff'
-                : '0 0 6px #00ffff, 0 0 12px #0080ff, 0 0 18px #00ffff';
+            // Mobile: chance menor de partículas grandes
+            const largeChance = this.isMobile ? 0.2 : 0.4;
+            const isLarge = Math.random() < largeChance;
+            
+            // Mobile: tamanhos menores
+            const size = this.isMobile 
+                ? (isLarge ? (8 + Math.random() * 6) : 3)  // Mobile: 3px ou 8-14px
+                : (isLarge ? (12 + Math.random() * 12) : 4); // Desktop: 4px ou 12-24px
+                
+            // Mobile: sombras mais leves
+            const shadow = this.isMobile
+                ? (isLarge 
+                    ? '0 0 8px #00ffff, 0 0 16px #0080ff' 
+                    : '0 0 4px #00ffff, 0 0 8px #0080ff')
+                : (isLarge
+                    ? '0 0 16px #00ffff, 0 0 32px #0080ff, 0 0 48px #00ffff'
+                    : '0 0 6px #00ffff, 0 0 12px #0080ff, 0 0 18px #00ffff');
 
             // Criar partícula de luz
             const lightPulse = document.createElement('div');
