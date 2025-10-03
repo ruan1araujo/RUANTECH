@@ -116,6 +116,10 @@ class FiberOpticDataFlow {
     createLightPulseOnPath(pathElement) {
         if (!pathElement || !this.particleContainer) return;
 
+        // Limitar quantidade de partículas simultâneas para evitar travamentos
+        const MAX_PARTICLES = 12;
+        if (this.lightPulses.length >= MAX_PARTICLES) return;
+
         try {
             // Verificar se o elemento tem getTotalLength (é um path/line SVG)
             let pathLength = 0;
@@ -132,40 +136,47 @@ class FiberOpticDataFlow {
 
             if (pathLength === 0) return;
 
+            // Alternar entre partículas pequenas e grandes
+            const isLarge = Math.random() < 0.4; // 40% chance de ser grande
+            const size = isLarge ? (12 + Math.random() * 12) : 4;
+            const shadow = isLarge
+                ? '0 0 16px #00ffff, 0 0 32px #0080ff, 0 0 48px #00ffff'
+                : '0 0 6px #00ffff, 0 0 12px #0080ff, 0 0 18px #00ffff';
+
             // Criar partícula de luz
             const lightPulse = document.createElement('div');
             lightPulse.className = 'fiber-optic-pulse';
+            lightPulse.dataset.large = isLarge ? '1' : '0';
 
-            // Estilo da partícula de luz - pequena e brilhante
+            // Estilo da partícula de luz - alternância de tamanho
             lightPulse.style.cssText = `
-                position: absolute;
-                width: 4px;
-                height: 4px;
-                background: radial-gradient(circle, #00ffff 0%, #0080ff 60%, transparent 100%);
-                border-radius: 50%;
-                box-shadow: 
-                    0 0 6px #00ffff,
-                    0 0 12px #0080ff,
-                    0 0 18px #00ffff;
-                z-index: 20;
-                pointer-events: none;
-            `;
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: radial-gradient(circle, #00ffff 0%, #0080ff 60%, transparent 100%);
+                    border-radius: 50%;
+                    box-shadow: ${shadow};
+                    z-index: 20;
+                    pointer-events: none;
+                    will-change: left, top, opacity, filter;
+                    transition: opacity 0.2s linear;
+                `;
 
             this.particleContainer.appendChild(lightPulse);
             this.lightPulses.push(lightPulse);
 
-            console.log('💡 Pulso de luz criado na fibra');
-
             // Animar ao longo do caminho SVG
-            this.animateLightAlongPath(lightPulse, pathElement, pathLength);
+            this.animateLightAlongPath(lightPulse, pathElement, pathLength, size, isLarge);
 
         } catch (error) {
             console.warn('❌ Erro ao criar pulso de luz:', error);
         }
     }
 
-    animateLightAlongPath(lightPulse, pathElement, pathLength) {
-        const duration = 2000 + Math.random() * 1000; // 2-3 segundos
+    animateLightAlongPath(lightPulse, pathElement, pathLength, size = 4, isLarge = false) {
+        // Partículas grandes se movem mais devagar
+        const baseDuration = isLarge ? 3200 : 2000;
+        const duration = baseDuration + Math.random() * 800;
         const startTime = performance.now();
         let animationId = null;
 
@@ -212,7 +223,9 @@ class FiberOpticDataFlow {
                 }
 
                 // Variar intensidade do brilho para simular fibra óptica
-                const glowIntensity = 0.8 + Math.sin(progress * Math.PI * 6) * 0.2;
+                const glowIntensity = isLarge
+                    ? 1.1 + Math.sin(progress * Math.PI * 6) * 0.3
+                    : 0.8 + Math.sin(progress * Math.PI * 6) * 0.2;
                 lightPulse.style.filter = `brightness(${glowIntensity}) saturate(1.2)`;
 
                 if (progress < 1 && this.isActive) {
@@ -246,11 +259,11 @@ class FiberOpticDataFlow {
     pause() {
         this.isActive = false;
         this.isPaused = true;
-        
+
         // Cancelar todas as animações ativas
         this.animationFrames.forEach(id => cancelAnimationFrame(id));
         this.animationFrames = [];
-        
+
         // Pausar intervalos
         if (this.pulseInterval) {
             clearInterval(this.pulseInterval);
@@ -260,31 +273,31 @@ class FiberOpticDataFlow {
             clearInterval(this.sequenceInterval);
             this.sequenceInterval = null;
         }
-        
+
         // Reduzir opacidade das partículas durante scroll
         if (this.particleContainer) {
             this.particleContainer.style.opacity = '0.3';
         }
-        
+
         console.log('⏸️ Sistema de fibra óptica pausado (scroll)');
     }
 
     resume() {
         this.isActive = true;
         this.isPaused = false;
-        
+
         // Restaurar opacidade
         if (this.particleContainer) {
             this.particleContainer.style.opacity = '1';
         }
-        
+
         // Reiniciar sistema após um pequeno delay
         setTimeout(() => {
             if (this.isActive && !this.isPaused) {
                 this.startFiberOpticFlow();
             }
         }, 300);
-        
+
         console.log('▶️ Sistema de fibra óptica retomado');
     }
 }

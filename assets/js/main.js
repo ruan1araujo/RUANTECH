@@ -88,19 +88,116 @@ class RuantechApp {
             this.network.resize();
         });
 
-        // Pausar animações durante o scroll - OTIMIZADO
+        // Controle de linhas durante scroll - OTIMIZADO
         let scrollTimeout;
         let isScrolling = false;
-        
+
+        const hideConnectionLines = () => {
+            // Buscar em todos os possíveis contêineres
+            const selectors = [
+                '.connection-line',
+                '#connection-lines line',
+                '#connection-lines path',
+                '.network-connection',
+                'svg line',
+                'svg path'
+            ];
+
+            selectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(line => {
+                    line.style.transition = 'opacity 0.2s ease';
+                    line.style.opacity = '0';
+                });
+            });
+
+            // Ocultar SVG inteiro como backup
+            const svg = document.getElementById('connection-lines');
+            if (svg) {
+                svg.style.transition = 'opacity 0.2s ease';
+                svg.style.opacity = '0';
+            }
+
+            // PAUSAR PARTÍCULAS - só funcionam com linhas visíveis
+            if (window.fiberOpticDataFlow) {
+                window.fiberOpticDataFlow.pause();
+                // Ocultar completamente o container de partículas
+                if (window.fiberOpticDataFlow.particleContainer) {
+                    window.fiberOpticDataFlow.particleContainer.style.opacity = '0';
+                    window.fiberOpticDataFlow.particleContainer.style.visibility = 'hidden';
+                }
+            }
+        };
+
+        const showConnectionLines = () => {
+            // Aguardar um pouco para garantir que o scroll parou
+            setTimeout(() => {
+                // Mostrar SVG primeiro
+                const svg = document.getElementById('connection-lines');
+                if (svg) {
+                    svg.style.transition = 'opacity 0.3s ease';
+                    svg.style.opacity = '1';
+                }
+
+                // Buscar e mostrar linhas com efeito cascata
+                const selectors = [
+                    '.connection-line',
+                    '#connection-lines line',
+                    '#connection-lines path',
+                    '.network-connection',
+                    'svg line',
+                    'svg path'
+                ];
+
+                let allLines = [];
+                selectors.forEach(selector => {
+                    const lines = Array.from(document.querySelectorAll(selector));
+                    allLines = allLines.concat(lines);
+                });
+
+                // Remover duplicatas
+                allLines = [...new Set(allLines)];
+
+                console.log(`🔗 Reconectando ${allLines.length} linhas...`);
+
+                allLines.forEach((line, idx) => {
+                    setTimeout(() => {
+                        line.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                        line.style.opacity = '0.7';
+
+                        // Efeito de pulso na reconexão
+                        setTimeout(() => {
+                            line.style.opacity = '1';
+                            setTimeout(() => {
+                                line.style.opacity = '0.7';
+                                line.style.transition = '';
+                            }, 200);
+                        }, 300);
+                    }, idx * 50); // Efeito cascata mais visível
+                });
+
+                // RETOMAR PARTÍCULAS - só após linhas estarem visíveis
+                setTimeout(() => {
+                    if (window.fiberOpticDataFlow) {
+                        // Tornar container visível primeiro
+                        if (window.fiberOpticDataFlow.particleContainer) {
+                            window.fiberOpticDataFlow.particleContainer.style.visibility = 'visible';
+                            window.fiberOpticDataFlow.particleContainer.style.opacity = '1';
+                        }
+                        // Retomar sistema de partículas
+                        window.fiberOpticDataFlow.resume();
+                        console.log('💫 Partículas retomadas após linhas reconectarem');
+                    }
+                }, allLines.length * 50 + 500); // Aguardar cascata das linhas + delay extra
+            }, 100);
+        };
+
         window.addEventListener('scroll', () => {
             // Marcar início do scroll
             if (!isScrolling) {
                 isScrolling = true;
-                
-                // Pausar sistemas de animação
-                if (this.particles && typeof this.particles.pause === 'function') {
-                    this.particles.pause();
-                }
+                hideConnectionLines();
+
+                // Pausar outros sistemas de animação (NÃO partículas - são pausadas em hideConnectionLines)
                 if (this.search && typeof this.search.hideTooltip === 'function') {
                     this.search.hideTooltip();
                 }
@@ -108,20 +205,20 @@ class RuantechApp {
                     this.network.pauseAnimations();
                 }
             }
-            
+
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
-                
-                // Retomar sistemas de animação
-                if (this.particles && typeof this.particles.resume === 'function') {
-                    this.particles.resume();
-                }
+
+                // Efeito de reconexão
+                showConnectionLines();
+
+                // Retomar outros sistemas de animação (NÃO partículas - elas são retomadas só após linhas)
                 if (this.network && this.network.resumeAnimations) {
                     this.network.resumeAnimations();
                 }
-            }, 200); // Reduzido de 300ms para 200ms
-        }, { passive: true }); // Adicionar passive para performance
+            }, 300); // Tempo para detectar parada do scroll
+        }, { passive: true });
     }
 
     handleServiceClick(e) {
@@ -478,7 +575,7 @@ class NetworkManager {
 
         // Event listener para resize com debounce otimizado
         this.setupResizeHandler();
-        
+
         // Event listener para scroll otimizado
         this.setupScrollHandler();
 
@@ -487,25 +584,25 @@ class NetworkManager {
 
     setupScrollHandler() {
         let scrollThrottle = null;
-        
+
         window.addEventListener('scroll', () => {
             // Pausar criação de conexões durante scroll
             this.isScrolling = true;
-            
+
             // Throttle para performance
             if (scrollThrottle) return;
-            
+
             scrollThrottle = setTimeout(() => {
                 scrollThrottle = null;
             }, 16); // 60fps
-            
+
             // Limpar timeout anterior
             clearTimeout(this.scrollTimeout);
-            
+
             // Definir fim do scroll
             this.scrollTimeout = setTimeout(() => {
                 this.isScrolling = false;
-                
+
                 // Retomar criação de conexões se necessário
                 if (this.isInitialized && !this.isCreatingConnections) {
                     this.resumeConnectionCreation();
@@ -528,7 +625,7 @@ class NetworkManager {
 
     init() {
         console.log('🔄 Iniciando conexões otimizadas...');
-        
+
         // Usar requestIdleCallback para não bloquear a UI
         if (window.requestIdleCallback) {
             window.requestIdleCallback(() => {
@@ -542,14 +639,14 @@ class NetworkManager {
 
     initializeStep1() {
         this.setupSVG();
-        
+
         // Próximo passo com delay
         setTimeout(() => this.initializeStep2(), 50);
     }
 
     initializeStep2() {
         this.calculateNodePositions();
-        
+
         // Próximo passo com delay
         setTimeout(() => this.initializeStep3(), 50);
     }
@@ -558,7 +655,7 @@ class NetworkManager {
         this.createConnectionsProgressive();
         this.setupHoverEffects();
         this.isInitialized = true;
-        
+
         console.log('✅ Conexões inicializadas progressivamente');
     }
 
@@ -595,7 +692,7 @@ class NetworkManager {
 
         // Criar batch de conexões
         const endIndex = Math.min(startIndex + this.maxBatchSize, this.nodes.length);
-        
+
         for (let i = startIndex; i < endIndex; i++) {
             this.createSingleConnection(this.nodes[i]);
         }
@@ -1041,7 +1138,7 @@ class NetworkManager {
         let index = 0;
         const showBatch = () => {
             if (index >= this.connections.length) return;
-            
+
             // Pausar se estiver scrollando
             if (this.isScrolling) {
                 setTimeout(showBatch, 100);
@@ -1051,7 +1148,7 @@ class NetworkManager {
             // Mostrar batch de 5 conexões por frame
             const batchSize = 5;
             const endIndex = Math.min(index + batchSize, this.connections.length);
-            
+
             for (let i = index; i < endIndex; i++) {
                 const conn = this.connections[i];
                 if (conn && conn.element) {
@@ -1059,14 +1156,14 @@ class NetworkManager {
                     conn.element.style.stroke = conn.color;
                 }
             }
-            
+
             index = endIndex;
-            
+
             if (index < this.connections.length) {
                 requestAnimationFrame(() => setTimeout(showBatch, 30));
             }
         };
-        
+
         requestAnimationFrame(showBatch);
     }
 
@@ -1074,40 +1171,40 @@ class NetworkManager {
         // Pulsos periódicos com throttling
         let lastPulseTime = 0;
         const pulseInterval = 4000; // 4 segundos
-        
+
         const createPulse = () => {
             const now = Date.now();
-            
+
             // Throttling - não criar pulsos muito frequentes
             if (now - lastPulseTime < pulseInterval) {
                 setTimeout(createPulse, pulseInterval - (now - lastPulseTime));
                 return;
             }
-            
+
             // Pausar durante scroll
             if (this.isScrolling || this.connections.length === 0) {
                 setTimeout(createPulse, 1000);
                 return;
             }
-            
+
             // Criar pulso otimizado
             this.createOptimizedPulse();
             lastPulseTime = now;
-            
+
             setTimeout(createPulse, pulseInterval);
         };
-        
+
         setTimeout(createPulse, 2000); // Primeiro pulso após 2s
     }
 
     createOptimizedPulse() {
         if (this.connections.length === 0) return;
-        
+
         const randomConnection = this.connections[Math.floor(Math.random() * this.connections.length)];
         if (!randomConnection || !randomConnection.element) return;
 
         const element = randomConnection.element;
-        
+
         // Usar apenas propriedades CSS otimizadas
         element.style.transition = 'stroke-width 0.3s ease, stroke-opacity 0.3s ease';
         element.style.strokeWidth = '3';
@@ -1117,7 +1214,7 @@ class NetworkManager {
         setTimeout(() => {
             element.style.strokeWidth = '2';
             element.style.strokeOpacity = '0.6';
-            
+
             // Limpar transition após animação
             setTimeout(() => {
                 element.style.transition = '';
@@ -1178,16 +1275,16 @@ class NetworkManager {
     resize() {
         this.handleResize();
     }
-    
+
     // Métodos de controle de animação
     pauseAnimations() {
         this.isScrolling = true;
         this.animationsPaused = true;
-        
+
         // Parar pulsos em massa
         this.pulseIntervals.forEach(interval => clearInterval(interval));
         this.pulseIntervals = [];
-        
+
         // Reduzir intensidade das animações durante scroll
         const connections = this.container.querySelectorAll('.connection-line');
         connections.forEach(line => {
@@ -1195,13 +1292,13 @@ class NetworkManager {
             line.style.willChange = 'auto'; // Otimizar GPU
         });
     }
-    
+
     resumeAnimations() {
         if (!this.animationsPaused) return;
-        
+
         this.isScrolling = false;
         this.animationsPaused = false;
-        
+
         // Aguardar um frame antes de retomar
         requestAnimationFrame(() => {
             const connections = this.container.querySelectorAll('.connection-line');
@@ -1209,7 +1306,7 @@ class NetworkManager {
                 line.style.opacity = '';
                 line.style.willChange = 'transform, opacity';
             });
-            
+
             // Retomar pulsos com delay escalonado
             this.startOptimizedPulses();
         });
